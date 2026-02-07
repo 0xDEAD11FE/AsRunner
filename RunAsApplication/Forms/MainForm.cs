@@ -11,10 +11,7 @@
 
         private void trayIcon_MouseDoubleClick(object? sender, MouseEventArgs e)
         {
-            using (var form = new ManageCredentialsForm())
-            {
-                form.ShowDialog();
-            }
+            FormManager.ShowManageCredentialsForm();
         }
     }
 }

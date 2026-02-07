@@ -88,35 +88,31 @@ public partial class ManageCredentialsForm : Form
         string? existingPassword = CredentialManager.GetPassword(oldTargetName);
 
         // Открываем форму редактирования
-        using (var form = new PromptUserPasswordForm(domain, userName, existingPassword))
+        var result = FormManager.ShowPromptForm(domain, userName, existingPassword);
+        
+        if (result != null)
         {
-            if (form.ShowDialog() == DialogResult.OK &&
-                !string.IsNullOrWhiteSpace(form.Domain) &&
-                !string.IsNullOrWhiteSpace(form.UserName) &&
-                !string.IsNullOrWhiteSpace(form.Password))
+            try
             {
-                try
+                string newTargetName = $"Tray:{result.Value.domain}\\{result.Value.userName}";
+
+                // Если ключ изменился, удаляем старую запись
+                if (oldTargetName != newTargetName)
                 {
-                    string newTargetName = $"Tray:{form.Domain}\\{form.UserName}";
-
-                    // Если ключ изменился, удаляем старую запись
-                    if (oldTargetName != newTargetName)
-                    {
-                        CredentialManager.DeleteCredential(oldTargetName);
-                    }
-
-                    // Сохраняем новую/обновленную запись
-                    CredentialManager.SavePassword(newTargetName, form.UserName, form.Password);
-
-                    // Обновляем список
-                    LoadCredentials();
-
-                    MessageBox.Show("Учетные данные успешно обновлены.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CredentialManager.DeleteCredential(oldTargetName);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при обновлении: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+
+                // Сохраняем новую/обновленную запись
+                CredentialManager.SavePassword(newTargetName, result.Value.userName, result.Value.password);
+
+                // Обновляем список
+                LoadCredentials();
+
+                MessageBox.Show("Учетные данные успешно обновлены.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

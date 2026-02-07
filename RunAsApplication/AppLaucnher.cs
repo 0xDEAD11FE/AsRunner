@@ -44,18 +44,7 @@ internal class AppLaucnher
 
     private (string domain, string userName, string password)? PromptForCredentials(string? domain, string? user)
     {
-        using (var form = new PromptUserPasswordForm(domain, user))
-        {
-            if (form.ShowDialog() == DialogResult.OK &&
-                !string.IsNullOrWhiteSpace(form.Domain) &&
-                !string.IsNullOrWhiteSpace(form.UserName) &&
-                !string.IsNullOrWhiteSpace(form.Password))
-            {
-                return (form.Domain, form.UserName, form.Password);
-            }
-
-            return null;
-        }
+        return FormManager.ShowPromptForm(domain, user);
     }
 
 }
