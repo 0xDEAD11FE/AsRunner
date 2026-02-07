@@ -8,6 +8,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <!-- Release конфигурация: оптимизация и без PDB файлов -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\ConfigReader\ConfigReader.csproj" />
     <ProjectReference Include="..\WinApiLauncher\WinApiWrapper.csproj" />
