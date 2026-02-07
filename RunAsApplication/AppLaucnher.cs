@@ -7,22 +7,34 @@ internal class AppLaucnher
 {
     public void Execute(ApplicationConfig entry)
     {
-        string credKey = $"Tray:{entry.Domain}\\{entry.UserName}";
-        string? password = CredentialManager.GetPassword(credKey);
+        string? domain = entry.Domain;
+        string? userName = entry.UserName;
+        string? password = null;
 
-        if (password is not { Length: > 0 })
+        // Если есть домен и имя пользователя, пытаемся получить пароль
+        if (!string.IsNullOrWhiteSpace(domain) && !string.IsNullOrWhiteSpace(userName))
         {
-            // Если пароля нет, вызываем UI-форму ввода (пароль возвращается строкой)
-            password = PromptForPassword(entry.UserName);
-            if (password != null)
-                CredentialManager.SavePassword(credKey, entry.UserName, password);
-            else
+            string credKey = $"Tray:{domain}\\{userName}";
+            password = CredentialManager.GetPassword(credKey);
+        }
+
+        // Если пароля нет или не заполнены domain/username, показываем форму
+        if (string.IsNullOrWhiteSpace(domain) || string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
+        {
+            var result = PromptForCredentials(domain, userName);
+            if (result == null)
                 return;
+
+            (domain, userName, password) = result.Value;
+
+            // Сохраняем пароль
+            string credKey = $"Tray:{domain}\\{userName}";
+            CredentialManager.SavePassword(credKey, userName, password);
         }
 
         try
         {
-            WinApiLauncher.LaunchNetOnly(entry.FilePath, entry.Domain, entry.UserName, password);
+            WinApiLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password);
         }
         catch (Exception ex)
         {
@@ -30,10 +42,20 @@ internal class AppLaucnher
         }
     }
 
-    private string? PromptForPassword(string user)
+    private (string domain, string userName, string password)? PromptForCredentials(string? domain, string? user)
     {
-        using (var form = new PromptUserPasswordForm(user))
-            return form.ShowDialog() == DialogResult.OK ? form.Password : null;
+        using (var form = new PromptUserPasswordForm(domain, user))
+        {
+            if (form.ShowDialog() == DialogResult.OK &&
+                !string.IsNullOrWhiteSpace(form.Domain) &&
+                !string.IsNullOrWhiteSpace(form.UserName) &&
+                !string.IsNullOrWhiteSpace(form.Password))
+            {
+                return (form.Domain, form.UserName, form.Password);
+            }
+
+            return null;
+        }
     }
 
 }

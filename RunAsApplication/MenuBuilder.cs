@@ -38,7 +38,16 @@ public class MenuBuilder
         }
 
         contextMenuStrip.Items.Add(new ToolStripSeparator());
+        contextMenuStrip.Items.Add("Управление учетными данными", null, (s, e) => ShowManageCredentials());
         contextMenuStrip.Items.Add("Выход", null, (s, e) => Application.Exit());
+    }
+
+    private void ShowManageCredentials()
+    {
+        using (var form = new ManageCredentialsForm())
+        {
+            form.ShowDialog();
+        }
     }
 
     private void AddAppItem(ToolStripItemCollection collection, ApplicationConfig applicationConfig)

@@ -30,87 +30,114 @@ partial class PromptUserPasswordForm
     {
         buttonApply = new Button();
         buttonCancel = new Button();
+        textBoxDomain = new TextBox();
         textBoxUserName = new TextBox();
         textBoxPassword = new TextBox();
-        label1 = new Label();
-        label2 = new Label();
+        labelDomain = new Label();
+        labelUserName = new Label();
+        labelPassword = new Label();
         SuspendLayout();
         // 
         // buttonApply
         // 
+        buttonApply.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         buttonApply.DialogResult = DialogResult.OK;
-        buttonApply.Location = new Point(12, 115);
+        buttonApply.Location = new Point(177, 155);
         buttonApply.Name = "buttonApply";
-        buttonApply.Size = new Size(75, 23);
-        buttonApply.TabIndex = 0;
-        buttonApply.Text = "Принять";
+        buttonApply.Size = new Size(90, 28);
+        buttonApply.TabIndex = 3;
+        buttonApply.Text = "ОК";
         buttonApply.UseVisualStyleBackColor = true;
         // 
         // buttonCancel
         // 
+        buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         buttonCancel.DialogResult = DialogResult.Cancel;
-        buttonCancel.Location = new Point(93, 115);
+        buttonCancel.Location = new Point(273, 155);
         buttonCancel.Name = "buttonCancel";
-        buttonCancel.Size = new Size(75, 23);
-        buttonCancel.TabIndex = 1;
+        buttonCancel.Size = new Size(90, 28);
+        buttonCancel.TabIndex = 4;
         buttonCancel.Text = "Отмена";
         buttonCancel.UseVisualStyleBackColor = true;
         // 
+        // textBoxDomain
+        // 
+        textBoxDomain.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        textBoxDomain.Location = new Point(15, 28);
+        textBoxDomain.Name = "textBoxDomain";
+        textBoxDomain.PlaceholderText = "DOMAIN или WORKGROUP";
+        textBoxDomain.Size = new Size(348, 23);
+        textBoxDomain.TabIndex = 0;
+        // 
         // textBoxUserName
         // 
-        textBoxUserName.Location = new Point(12, 27);
+        textBoxUserName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        textBoxUserName.Location = new Point(15, 70);
         textBoxUserName.Name = "textBoxUserName";
-        textBoxUserName.PlaceholderText = "Empty";
-        textBoxUserName.Size = new Size(156, 23);
-        textBoxUserName.TabIndex = 2;
+        textBoxUserName.PlaceholderText = "Имя пользователя";
+        textBoxUserName.Size = new Size(348, 23);
+        textBoxUserName.TabIndex = 1;
         // 
         // textBoxPassword
         // 
-        textBoxPassword.Location = new Point(12, 72);
+        textBoxPassword.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        textBoxPassword.Location = new Point(15, 112);
         textBoxPassword.Name = "textBoxPassword";
-        textBoxPassword.PasswordChar = '*';
-        textBoxPassword.PlaceholderText = "Empty";
-        textBoxPassword.Size = new Size(156, 23);
-        textBoxPassword.TabIndex = 3;
+        textBoxPassword.PlaceholderText = "Пароль";
+        textBoxPassword.Size = new Size(348, 23);
+        textBoxPassword.TabIndex = 2;
         // 
-        // label1
+        // labelDomain
         // 
-        label1.AutoSize = true;
-        label1.Location = new Point(12, 9);
-        label1.Name = "label1";
-        label1.Size = new Size(60, 15);
-        label1.TabIndex = 4;
-        label1.Text = "Username";
+        labelDomain.AutoSize = true;
+        labelDomain.Location = new Point(15, 10);
+        labelDomain.Name = "labelDomain";
+        labelDomain.Size = new Size(44, 15);
+        labelDomain.TabIndex = 5;
+        labelDomain.Text = "Домен";
         // 
-        // label2
+        // labelUserName
         // 
-        label2.AutoSize = true;
-        label2.Location = new Point(12, 54);
-        label2.Name = "label2";
-        label2.Size = new Size(57, 15);
-        label2.TabIndex = 5;
-        label2.Text = "Password";
+        labelUserName.AutoSize = true;
+        labelUserName.Location = new Point(15, 52);
+        labelUserName.Name = "labelUserName";
+        labelUserName.Size = new Size(109, 15);
+        labelUserName.TabIndex = 6;
+        labelUserName.Text = "Имя пользователя";
+        // 
+        // labelPassword
+        // 
+        labelPassword.AutoSize = true;
+        labelPassword.Location = new Point(15, 94);
+        labelPassword.Name = "labelPassword";
+        labelPassword.Size = new Size(49, 15);
+        labelPassword.TabIndex = 7;
+        labelPassword.Text = "Пароль";
         // 
         // PromptUserPasswordForm
         // 
         AcceptButton = buttonApply;
-        AccessibleRole = AccessibleRole.Dialog;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         CancelButton = buttonCancel;
-        ClientSize = new Size(220, 175);
-        ControlBox = false;
-        Controls.Add(label2);
-        Controls.Add(label1);
+        ClientSize = new Size(378, 198);
+        Controls.Add(labelPassword);
+        Controls.Add(labelUserName);
+        Controls.Add(labelDomain);
         Controls.Add(textBoxPassword);
         Controls.Add(textBoxUserName);
+        Controls.Add(textBoxDomain);
         Controls.Add(buttonCancel);
         Controls.Add(buttonApply);
         FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
+        MinimizeBox = false;
         Name = "PromptUserPasswordForm";
         ShowIcon = false;
         ShowInTaskbar = false;
-        Text = "Prompt user password";
+        StartPosition = FormStartPosition.CenterScreen;
+        Text = "Учетные данные";
+        TopMost = true;
         FormClosing += PromptUserPasswordForm_FormClosing;
         ResumeLayout(false);
         PerformLayout();
@@ -120,8 +147,10 @@ partial class PromptUserPasswordForm
 
     private Button buttonApply;
     private Button buttonCancel;
+    private TextBox textBoxDomain;
     private TextBox textBoxUserName;
     private TextBox textBoxPassword;
-    private Label label1;
-    private Label label2;
+    private Label labelDomain;
+    private Label labelUserName;
+    private Label labelPassword;
 }

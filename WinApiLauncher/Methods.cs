@@ -27,4 +27,10 @@ internal static class Methods
 
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] uint flags);
+
+    [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern bool CredEnumerate(string? filter, uint flags, out int count, out IntPtr credentials);
+
+    [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern bool CredDelete(string target, uint type, uint flags);
 }

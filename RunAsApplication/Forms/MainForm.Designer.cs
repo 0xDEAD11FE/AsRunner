@@ -40,6 +40,7 @@
             trayIcon.Icon = (Icon)resources.GetObject("trayIcon.Icon");
             trayIcon.Text = "TrayIcon";
             trayIcon.Visible = true;
+            trayIcon.MouseDoubleClick += trayIcon_MouseDoubleClick;
             // 
             // trayMenuStrip
             // 

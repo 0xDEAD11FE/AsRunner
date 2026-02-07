@@ -1,3 +1,3 @@
 ﻿namespace RunAsApplication.Models;
 
-public record ApplicationConfig(string FilePath, string UserName, string Domain);
+public record ApplicationConfig(string FilePath, string? UserName = null, string? Domain = null);
