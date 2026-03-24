@@ -45,7 +45,7 @@
             // trayMenuStrip
             // 
             trayMenuStrip.Name = "trayMenuStrip";
-            trayMenuStrip.Size = new Size(181, 26);
+            trayMenuStrip.Size = new Size(61, 4);
             // 
             // MainForm
             // 
@@ -54,9 +54,9 @@
             ClientSize = new Size(800, 450);
             MaximizeBox = false;
             Name = "MainForm";
+            ShowIcon = false;
             ShowInTaskbar = false;
             Text = "Main";
-            WindowState = FormWindowState.Minimized;
             ResumeLayout(false);
         }
 
