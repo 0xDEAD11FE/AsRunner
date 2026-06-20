@@ -10,9 +10,11 @@
     <SuppressIces>ICE38;ICE43;ICE57</SuppressIces>
     <!-- WiX-проект — инструментальный; держим его вне Central Package Management. -->
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <!-- Версия MSI. Локально дефолт 1.0.0.0; в CI передаётся из тега: -p:ProductVersion=1.2.3 -->
+    <ProductVersion Condition="'$(ProductVersion)' == ''">1.0.0.0</ProductVersion>
     <!-- Папка опубликованного приложения (наполняется таргетом PublishMainApp ниже). -->
     <PublishDir>$(MSBuildThisFileDirectory)..\AsRunner\bin\$(Configuration)\publish\</PublishDir>
-    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+    <DefineConstants>PublishDir=$(PublishDir);ProductVersion=$(ProductVersion)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

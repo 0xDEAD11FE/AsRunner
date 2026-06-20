@@ -3,7 +3,7 @@
 
   <Package Name="AsRunner"
            Manufacturer="AsRunner"
-           Version="1.0.0.0"
+           Version="$(var.ProductVersion)"
            UpgradeCode="0566944A-AC18-4D28-B72C-F5C6B4E94978"
            Scope="perMachine"
            Language="1033">
