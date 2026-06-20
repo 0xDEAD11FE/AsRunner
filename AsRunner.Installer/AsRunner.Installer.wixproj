@@ -1,0 +1,33 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+
+  <PropertyGroup>
+    <OutputName>AsRunnerSetup</OutputName>
+    <!-- 64-битный пакет: компоненты ставятся в Program Files (64-bit). -->
+    <Platform>x64</Platform>
+    <!-- Не генерировать .wixpdb (нужен только для патчей/анализа сборки). -->
+    <SuppressPdbOutput>true</SuppressPdbOutput>
+    <!-- Ложноположительные ICE для ярлыка меню «Пуск» в зафиксированном per-machine пакете. -->
+    <SuppressIces>ICE38;ICE43;ICE57</SuppressIces>
+    <!-- WiX-проект — инструментальный; держим его вне Central Package Management. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <!-- Папка опубликованного приложения (наполняется таргетом PublishMainApp ниже). -->
+    <PublishDir>$(MSBuildThisFileDirectory)..\AsRunner\bin\$(Configuration)\publish\</PublishDir>
+    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="6.0.2" />
+  </ItemGroup>
+
+  <!-- Порядок сборки: приложение собирается раньше инсталлятора. -->
+  <ItemGroup>
+    <ProjectReference Include="..\AsRunner\AsRunner.csproj" />
+  </ItemGroup>
+
+  <!-- Авто-публикация приложения перед сборкой MSI: ручной publish не нужен
+       (ни из студии, ни из CLI). Config.json не копируется (CopyToPublishDirectory=Never). -->
+  <Target Name="PublishMainApp" BeforeTargets="BeforeBuild">
+    <Exec Command="dotnet publish &quot;$(MSBuildThisFileDirectory)..\AsRunner\AsRunner.csproj&quot; -c $(Configuration) -r win-x64 --self-contained false -p:PublishSingleFile=true -o &quot;$(PublishDir)&quot;" />
+  </Target>
+
+</Project>

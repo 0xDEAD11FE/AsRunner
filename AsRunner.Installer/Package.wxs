@@ -1,0 +1,47 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="AsRunner"
+           Manufacturer="AsRunner"
+           Version="1.0.0.0"
+           UpgradeCode="0566944A-AC18-4D28-B72C-F5C6B4E94978"
+           Scope="perMachine"
+           Language="1033">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of AsRunner is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="AsRunner" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder" />
+
+    <Feature Id="Main" Title="AsRunner" AllowAbsent="no">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+
+    <!-- Отдельная страница выбора папки установки. -->
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+  </Package>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!-- Один AsRunner.exe (single-file). Config.json не входит — создаётся в %APPDATA%. -->
+      <Files Include="$(var.PublishDir)**" />
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <Component Id="StartMenuShortcut" Directory="ProgramMenuFolder" Guid="EC2BD621-9DCE-4F19-A78D-9F06FF35AB55">
+      <Shortcut Id="AsRunnerStartMenu"
+                Name="AsRunner"
+                Target="[INSTALLFOLDER]AsRunner.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RegistryValue Root="HKMU" Key="Software\AsRunner" Name="installed"
+                     Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+  </Fragment>
+
+</Wix>
