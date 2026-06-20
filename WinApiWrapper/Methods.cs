@@ -36,4 +36,10 @@ internal static class Methods
 
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern bool CredDelete(string target, uint type, uint flags);
+
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+    internal static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool DestroyIcon(IntPtr hIcon);
 }

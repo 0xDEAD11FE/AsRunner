@@ -16,7 +16,7 @@ public class ProcessLauncher
             user,
             domain,
             password,
-            Constants.LOGON_NETCREDENTIALS_ONLY,
+            Constants.LogonFlags.NetCredentialsOnly,
             null,           // ApplicationName (можно null, если путь в commandLine)
             commandLine,    // CommandLine
             0,              // CreationFlags

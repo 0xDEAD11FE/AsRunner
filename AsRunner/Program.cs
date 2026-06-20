@@ -30,10 +30,10 @@ internal static class Program
             ApplicationConfiguration.Initialize();
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 
-            MyApplicationContext context;
+            AsRunnerContext context;
             try
             {
-                context = new MyApplicationContext();
+                context = new AsRunnerContext();
             }
             catch (Exception ex)
             {
