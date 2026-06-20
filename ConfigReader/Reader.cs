@@ -19,16 +19,28 @@ public class Reader
         Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
     };
 
-    // Путь строим от папки exe, а не от текущей рабочей директории —
-    // иначе запуск из автозагрузки/ярлыка не найдёт файл.
-    private static string ConfigPath => Path.Combine(AppContext.BaseDirectory, ConfigFileName);
+    // Активный конфиг: портативный рядом с exe имеет приоритет, иначе —
+    // per-user в %APPDATA%\AsRunner (пишется без прав, у каждого пользователя свой).
+    private static string ResolveConfigPath()
+    {
+        var portable = Path.Combine(AppContext.BaseDirectory, ConfigFileName);
+        if (File.Exists(portable))
+            return portable;
+
+        return Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "AsRunner",
+            ConfigFileName);
+    }
 
     public static RootConfig ReadConfig()
     {
-        var path = ConfigPath;
+        var path = ResolveConfigPath();
 
+        // Первый запуск установленной версии: в %APPDATA% конфига ещё нет —
+        // создаём пустой, чтобы приложение стартовало (меню настраивается из UI).
         if (!File.Exists(path))
-            throw new FileNotFoundException($"Файл конфигурации не найден: {path}", path);
+            WriteConfigTo(path, new RootConfig());
 
         var json = File.ReadAllText(path);
 
@@ -48,9 +60,14 @@ public class Reader
         return result;
     }
 
-    public static void WriteConfig(RootConfig config)
+    public static void WriteConfig(RootConfig config) => WriteConfigTo(ResolveConfigPath(), config);
+
+    private static void WriteConfigTo(string path, RootConfig config)
     {
-        var json = JsonSerializer.Serialize(config, WriteOptions);
-        File.WriteAllText(ConfigPath, json);
+        var dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir))
+            Directory.CreateDirectory(dir);
+
+        File.WriteAllText(path, JsonSerializer.Serialize(config, WriteOptions));
     }
 }
