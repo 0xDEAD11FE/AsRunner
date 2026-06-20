@@ -1,3 +1,7 @@
 ﻿namespace ConfigReader.Models;
 
-public record ApplicationConfig(string FilePath, string? UserName = null, string? Domain = null);
+public record ApplicationConfig(
+    string FilePath,
+    string? UserName = null,
+    string? Domain = null,
+    string? Alias = null);

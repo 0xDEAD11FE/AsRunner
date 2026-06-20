@@ -50,7 +50,9 @@ public class MenuBuilder : IDisposable
 
     private void AddAppItem(ToolStripItemCollection collection, ApplicationConfig applicationConfig)
     {
-        string label = Path.GetFileNameWithoutExtension(applicationConfig.FilePath);
+        string label = !string.IsNullOrWhiteSpace(applicationConfig.Alias)
+            ? applicationConfig.Alias
+            : Path.GetFileNameWithoutExtension(applicationConfig.FilePath);
         var item = new ToolStripMenuItem(label)
         {
             Image = TryGetIcon(applicationConfig.FilePath),

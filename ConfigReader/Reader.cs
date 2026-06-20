@@ -1,4 +1,6 @@
-﻿using ConfigReader.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ConfigReader.Models;
 
 namespace ConfigReader;
 
@@ -6,11 +8,20 @@ public class Reader
 {
     private const string ConfigFileName = "Config.json";
 
+    private static readonly JsonSerializerOptions WriteOptions = new()
+    {
+        WriteIndented = true,
+        // null-поля (UserName/Domain/Alias) не пишем — конфиг остаётся чистым.
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
+
+    // Путь строим от папки exe, а не от текущей рабочей директории —
+    // иначе запуск из автозагрузки/ярлыка не найдёт файл.
+    private static string ConfigPath => Path.Combine(AppContext.BaseDirectory, ConfigFileName);
+
     public static RootConfig ReadConfig()
     {
-        // Путь строим от папки exe, а не от текущей рабочей директории —
-        // иначе запуск из автозагрузки/ярлыка не найдёт файл.
-        var path = Path.Combine(AppContext.BaseDirectory, ConfigFileName);
+        var path = ConfigPath;
 
         if (!File.Exists(path))
             throw new FileNotFoundException($"Файл конфигурации не найден: {path}", path);
@@ -20,9 +31,9 @@ public class Reader
         RootConfig? result;
         try
         {
-            result = System.Text.Json.JsonSerializer.Deserialize<RootConfig>(json);
+            result = JsonSerializer.Deserialize<RootConfig>(json);
         }
-        catch (System.Text.Json.JsonException ex)
+        catch (JsonException ex)
         {
             throw new InvalidDataException($"Не удалось разобрать {ConfigFileName}: {ex.Message}", ex);
         }
@@ -31,5 +42,11 @@ public class Reader
             throw new InvalidDataException($"{ConfigFileName} пуст или содержит null.");
 
         return result;
+    }
+
+    public static void WriteConfig(RootConfig config)
+    {
+        var json = JsonSerializer.Serialize(config, WriteOptions);
+        File.WriteAllText(ConfigPath, json);
     }
 }
