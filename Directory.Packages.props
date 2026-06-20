@@ -1,0 +1,15 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!--
+    Версии всех NuGet-пакетов задаются здесь через <PackageVersion Include="..." Version="..." />,
+    а в .csproj остаётся только <PackageReference Include="..." /> без атрибута Version.
+    Сейчас проекты не используют сторонних пакетов, поэтому список пуст.
+  -->
+  <ItemGroup>
+  </ItemGroup>
+
+</Project>

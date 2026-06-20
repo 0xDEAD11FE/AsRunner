@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../ConfigReader/ConfigReader.csproj" />
+  <Project Path="../WinApiWrapper/WinApiWrapper.csproj" />
+  <Project Path="AsRunner.csproj" />
+</Solution>
