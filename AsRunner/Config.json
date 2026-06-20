@@ -1,9 +1,10 @@
-﻿{
-  "GroupName1": [
+{
+  "Windows": [
     {
-      "FilePath": "C:\\",
-      "UserName": "UserName",
-      "Domain": "Domain"
+      "FilePath": "C:\\Windows\\explorer.exe"
+    },
+    {
+      "FilePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
     }
   ]
 }
