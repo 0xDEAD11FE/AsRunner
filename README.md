@@ -1,8 +1,9 @@
 # AsRunner
 
-[![Latest release](https://img.shields.io/github/v/release/0xDEAD11FE/AsRunner?sort=semver)](https://github.com/0xDEAD11FE/AsRunner/releases/latest)
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64-blue)
 ![.NET](https://img.shields.io/badge/.NET-10-512BD4)
+
+[Latest release →](https://github.com/0xDEAD11FE/AsRunner/releases/latest)
 
 A lightweight Windows **tray utility for launching applications under different
 user credentials** — a network-only logon, equivalent to `runas /netonly`.
