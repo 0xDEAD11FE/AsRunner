@@ -59,6 +59,9 @@ wwwroot/lib/
 # Visual Studio Code
 .vscode/
 
+# Claude Code (local settings and project memory)
+.claude/
+
 # Others
 *.dbmdl
 *.bak
