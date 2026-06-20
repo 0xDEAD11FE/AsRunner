@@ -46,4 +46,5 @@ jobs:
           generate_release_notes: true
           # Теги с суффиксом (v1.2.3-beta) помечаются как pre-release
           prerelease: ${{ contains(github.ref_name, '-') }}
-          # draft: true   # включи, если хочешь сперва проверять Release перед публикацией
+          # Релиз создаётся черновиком: заметки пишешь на GitHub и публикуешь вручную.
+          draft: true
