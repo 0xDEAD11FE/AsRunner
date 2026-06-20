@@ -1,14 +1,14 @@
-﻿using RunAsApplication.Models;
+﻿using ConfigReader.Models;
 
-namespace RunAsApplication;
+namespace AsRunner;
 
 public class MenuBuilder
 {
-    private readonly AppLaucnher _appLaucnher;
+    private readonly AppLauncher _appLauncher;
 
-    internal MenuBuilder(AppLaucnher appLaucnher)
+    internal MenuBuilder(AppLauncher appLauncher)
     {
-        _appLaucnher = appLaucnher;
+        _appLauncher = appLauncher;
     }
 
     internal void BuildMenu(RootConfig config, ContextMenuStrip contextMenuStrip)
@@ -38,7 +38,6 @@ public class MenuBuilder
         }
 
         contextMenuStrip.Items.Add(new ToolStripSeparator());
-        //contextMenuStrip.Items.Add("Управление учетными данными", null, (s, e) => FormManager.ShowManageCredentialsForm());
         contextMenuStrip.Items.Add("Выход", null, (s, e) => Application.Exit());
     }
 
@@ -47,7 +46,7 @@ public class MenuBuilder
         string label = Path.GetFileNameWithoutExtension(applicationConfig.FilePath);
         var item = new ToolStripMenuItem(label);
 
-        item.Click += (s, e) => _appLaucnher.Execute(applicationConfig);
+        item.Click += (s, e) => _appLauncher.Execute(applicationConfig);
         collection.Add(item);
     }
 }

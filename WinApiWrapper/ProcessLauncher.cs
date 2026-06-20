@@ -3,7 +3,7 @@ using WinApiWrapper.Models;
 
 namespace WinApiWrapper;
 
-public class WinApiLauncher
+public class ProcessLauncher
 {
     public static void LaunchNetOnly(string path, string domain, string user, string password)
     {
@@ -30,7 +30,12 @@ public class WinApiLauncher
             int error = Marshal.GetLastWin32Error();
             throw new System.ComponentModel.Win32Exception(error);
         }
+
+        // Дескрипторы процесса и потока нам не нужны — сразу закрываем,
+        // иначе они утекают на каждый запуск.
+        if (pi.hProcess != IntPtr.Zero)
+            Methods.CloseHandle(pi.hProcess);
+        if (pi.hThread != IntPtr.Zero)
+            Methods.CloseHandle(pi.hThread);
     }
-
-
 }

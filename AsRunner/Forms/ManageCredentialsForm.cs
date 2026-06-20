@@ -1,6 +1,6 @@
 ﻿using WinApiWrapper;
 
-namespace RunAsApplication;
+namespace AsRunner;
 
 public partial class ManageCredentialsForm : Form
 {

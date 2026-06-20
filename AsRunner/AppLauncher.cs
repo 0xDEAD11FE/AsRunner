@@ -1,9 +1,9 @@
-﻿using RunAsApplication.Models;
+﻿using ConfigReader.Models;
 using WinApiWrapper;
 
-namespace RunAsApplication;
+namespace AsRunner;
 
-internal class AppLaucnher
+internal class AppLauncher
 {
     public void Execute(ApplicationConfig entry)
     {
@@ -34,11 +34,17 @@ internal class AppLaucnher
 
         try
         {
-            WinApiLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password);
+            ProcessLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password);
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error while launching {entry.FilePath}. Exception: {ex}");
+        }
+        finally
+        {
+            // Сокращаем время жизни пароля в открытом виде.
+            SensitiveData.Clear(password);
+            password = null;
         }
     }
 

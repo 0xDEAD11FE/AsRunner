@@ -1,4 +1,4 @@
-﻿namespace RunAsApplication;
+﻿namespace AsRunner;
 
 public partial class PromptUserPasswordForm : Form
 {

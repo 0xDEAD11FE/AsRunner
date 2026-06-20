@@ -1,4 +1,4 @@
-﻿namespace RunAsApplication
+﻿namespace AsRunner
 {
     partial class MainForm
     {

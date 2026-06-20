@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ConfigReader\ConfigReader.csproj" />
-    <ProjectReference Include="..\WinApiLauncher\WinApiWrapper.csproj" />
+    <ProjectReference Include="..\WinApiWrapper\WinApiWrapper.csproj" />
   </ItemGroup>
 
   <ItemGroup>

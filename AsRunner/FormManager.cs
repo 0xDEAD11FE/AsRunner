@@ -1,4 +1,4 @@
-﻿namespace RunAsApplication;
+﻿namespace AsRunner;
 
 internal static class FormManager
 {
