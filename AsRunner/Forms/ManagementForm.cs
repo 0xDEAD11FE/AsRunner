@@ -181,11 +181,11 @@ public partial class ManagementForm : Form
             Reader.WriteConfig(config);
             ConfigChanged = true;
 
-            // сохранённое состояние становится новым базовым
+            // сохранённое состояние становится новым базовым;
+            // обратная связь — кнопка «Сохранить» гаснет (изменений больше нет).
             _baseline = Snapshot();
             _hasChanges = false;
             UpdateSaveButton();
-            MessageBox.Show("Сохранено.", "AsRunner", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
