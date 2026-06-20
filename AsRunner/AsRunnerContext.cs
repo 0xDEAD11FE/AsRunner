@@ -9,12 +9,38 @@ public class AsRunnerContext : ApplicationContext
     public AsRunnerContext() : base()
     {
         _mainForm = new MainForm();
+        _mainForm.ManageRequested += OnManageRequested;
+
         var config = ConfigReader.Reader.ReadConfig();
 
         _appLauncher = new AppLauncher();
         _menuBuilder = new MenuBuilder(_appLauncher);
 
         _menuBuilder.BuildMenu(config, _mainForm.TrayMenuStrip);
+    }
+
+    private void OnManageRequested(object? sender, EventArgs e)
+    {
+        // Если конфиг был сохранён — перечитываем и пересобираем меню.
+        if (FormManager.ShowManagementForm())
+            ReloadMenu();
+    }
+
+    private void ReloadMenu()
+    {
+        try
+        {
+            var config = ConfigReader.Reader.ReadConfig();
+            _menuBuilder.BuildMenu(config, _mainForm.TrayMenuStrip);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Не удалось перечитать конфигурацию:\n\n{ex.Message}",
+                "Ошибка",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
     }
 
     protected override void Dispose(bool disposing)

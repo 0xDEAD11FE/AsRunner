@@ -3,7 +3,7 @@
 internal static class FormManager
 {
     private static PromptUserPasswordForm? _activePromptForm;
-    private static ManageCredentialsForm? _activeManageCredentialsForm;
+    private static ManagementForm? _activeManagementForm;
 
     public static (string domain, string userName, string password)? ShowPromptForm(string? domain, string? userName, string? existingPassword = null)
     {
@@ -35,25 +35,27 @@ internal static class FormManager
         }
     }
 
-    public static void ShowManageCredentialsForm()
+    /// <summary>Показывает окно управления. Возвращает true, если конфиг был сохранён.</summary>
+    public static bool ShowManagementForm()
     {
-        if (_activeManageCredentialsForm != null && !_activeManageCredentialsForm.IsDisposed)
+        if (_activeManagementForm != null && !_activeManagementForm.IsDisposed)
         {
-            _activeManageCredentialsForm.Activate();
-            _activeManageCredentialsForm.BringToFront();
-            return;
+            _activeManagementForm.Activate();
+            _activeManagementForm.BringToFront();
+            return false;
         }
 
-        _activeManageCredentialsForm = new ManageCredentialsForm();
-        
+        _activeManagementForm = new ManagementForm();
+
         try
         {
-            _activeManageCredentialsForm.ShowDialog();
+            _activeManagementForm.ShowDialog();
+            return _activeManagementForm.ConfigChanged;
         }
         finally
         {
-            _activeManageCredentialsForm?.Dispose();
-            _activeManageCredentialsForm = null;
+            _activeManagementForm?.Dispose();
+            _activeManagementForm = null;
         }
     }
 }

@@ -1,5 +1,7 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using ConfigReader.Models;
 
 namespace ConfigReader;
@@ -13,6 +15,8 @@ public class Reader
         WriteIndented = true,
         // null-поля (UserName/Domain/Alias) не пишем — конфиг остаётся чистым.
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        // Пишем кириллицу как читаемый UTF-8, а не \uXXXX (файл правится руками).
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
     };
 
     // Путь строим от папки exe, а не от текущей рабочей директории —

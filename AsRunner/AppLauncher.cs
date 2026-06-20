@@ -14,8 +14,7 @@ internal class AppLauncher
         // Если есть домен и имя пользователя, пытаемся получить пароль
         if (!string.IsNullOrWhiteSpace(domain) && !string.IsNullOrWhiteSpace(userName))
         {
-            string credKey = $"Tray:{domain}\\{userName}";
-            password = CredentialManager.GetPassword(credKey);
+            password = CredentialManager.GetPassword(CredentialManager.TrayTargetName(domain, userName));
         }
 
         // Если пароля нет или не заполнены domain/username, показываем форму
@@ -28,8 +27,7 @@ internal class AppLauncher
             (domain, userName, password) = result.Value;
 
             // Сохраняем пароль
-            string credKey = $"Tray:{domain}\\{userName}";
-            CredentialManager.SavePassword(credKey, userName, password);
+            CredentialManager.SavePassword(CredentialManager.TrayTargetName(domain, userName), userName, password);
         }
 
         try

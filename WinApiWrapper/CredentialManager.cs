@@ -8,6 +8,9 @@ public class CredentialManager
 {
     private const string TrayPrefix = "Tray:";
 
+    /// <summary>Ключ хранения учётных данных приложения: "Tray:{domain}\{userName}".</summary>
+    public static string TrayTargetName(string domain, string userName) => $"{TrayPrefix}{domain}\\{userName}";
+
     public static string? GetPassword(string targetName)
     {
         if (Methods.CredRead(targetName, 1, 0, out IntPtr credPtr)) // 1 = Generic Credential
