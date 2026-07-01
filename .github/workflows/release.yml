@@ -33,7 +33,7 @@ jobs:
           Write-Host "Tag $tag -> version $version"
 
       - name: Publish app (single-file, framework-dependent)
-        run: dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o AsRunner/bin/Release/publish
+        run: dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:Version=${{ steps.ver.outputs.version }} -o AsRunner/bin/Release/publish
 
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress

@@ -41,6 +41,7 @@
             trayIcon.Text = "AsRunner";
             trayIcon.Visible = true;
             trayIcon.MouseDoubleClick += trayIcon_MouseDoubleClick;
+            trayIcon.BalloonTipClicked += trayIcon_BalloonTipClicked;
             // 
             // trayMenuStrip
             // 
