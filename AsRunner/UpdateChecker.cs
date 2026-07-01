@@ -18,8 +18,8 @@ internal static class UpdateChecker
     private const string LatestReleaseApi =
         "https://api.github.com/repos/0xDEAD11FE/AsRunner/releases/latest";
 
-    // Как часто проверять. Раз в сутки; поставь TimeSpan.FromDays(7) для еженедельной.
-    private static readonly TimeSpan MinInterval = TimeSpan.FromDays(1);
+    // Как часто проверять. Раз в неделю; поставь TimeSpan.FromDays(1) для ежедневной.
+    private static readonly TimeSpan MinInterval = TimeSpan.FromDays(7);
 
     private static string StampPath => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
