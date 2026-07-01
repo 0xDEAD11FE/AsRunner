@@ -31,10 +31,11 @@ SolidCompression=yes
 WizardStyle=modern
 LicenseFile=License.txt
 
-; Обновление: закрыть запущенный экземпляр автоматически.
-; AppMutex — наш named-mutex из Program.cs (детект запущенного приложения).
-; CloseApplications+Restart Manager — авто-закрытие процессов, держащих файлы.
-AppMutex=AsRunner_SingleInstance_Mutex_24833BA9-80A9-4B40-8B90-5D3E40F4E957
+; Обновление: закрыть запущенный экземпляр автоматически, без ручного диалога.
+; Полагаемся на Restart Manager (CloseApplications) — он сам закрывает процессы,
+; держащие обновляемые файлы. AppMutex НЕ используем: он проверяется раньше RM и
+; показал бы ручной промпт «закройте приложение», перебивая авто-закрытие.
+; RestartApplications=no — не даём RM перезапускать (приложение стартуем через [Run]).
 CloseApplications=yes
 RestartApplications=no
 
