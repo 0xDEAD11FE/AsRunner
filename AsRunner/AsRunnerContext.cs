@@ -11,6 +11,14 @@ public class AsRunnerContext : ApplicationContext
         _mainForm = new MainForm();
         _mainForm.ManageRequested += OnManageRequested;
 
+        // Привязываем время жизни приложения к главной форме: когда её окно
+        // закрывается (в т.ч. по запросу Restart Manager при обновлении через
+        // установщик), цикл сообщений завершается и процесс корректно выходит.
+        MainForm = _mainForm;
+        // Форсируем создание (скрытого, невидимого) окна формы, чтобы shutdown-
+        // запрос RM/сессии дошёл именно до неё, а не только до окна NotifyIcon.
+        _ = _mainForm.Handle;
+
         var config = ConfigReader.Reader.ReadConfig();
 
         _appLauncher = new AppLauncher();
