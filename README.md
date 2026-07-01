@@ -26,9 +26,11 @@ app from the tray, and it starts under the chosen account.
 
 ## Install
 
-1. Download the latest `AsRunnerSetup-x.y.z.msi` from the
+1. Download the latest `AsRunnerSetup-x.y.z.exe` from the
    [**Releases**](https://github.com/0xDEAD11FE/AsRunner/releases/latest) page.
 2. Run it, choose the install folder, finish (per-machine install, asks for UAC).
+   On update a running instance is closed automatically, and AsRunner is launched
+   when setup finishes.
 
 **Requirements**
 
@@ -37,7 +39,8 @@ app from the tray, and it starts under the chosen account.
 
 ## Usage
 
-- After install, start **AsRunner** (Start Menu) — it lives in the system tray.
+- The installer starts **AsRunner** automatically; it then lives in the system
+  tray (no shortcut — it's a background tray app).
 - **Right-click** the tray icon → menu of your apps → click one to launch it
   (you'll be asked for the password the first time, then it's remembered).
 - **Double-click** the tray icon → management window (tabs **Applications** and
@@ -80,8 +83,9 @@ Requires the **.NET 10 SDK** on Windows.
 # application
 dotnet build AsRunner/AsRunner.slnx -c Release
 
-# installer (MSI) — WiX v6, restored from NuGet; auto-publishes the app
-dotnet build AsRunner.Installer/AsRunner.Installer.wixproj -c Release
+# installer (Inno Setup 6 must be installed locally)
+dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o AsRunner/bin/Release/publish
+iscc AsRunner.Installer/AsRunner.iss
 ```
 
 Releases are produced automatically by GitHub Actions on a `v*` tag
@@ -94,7 +98,7 @@ Releases are produced automatically by GitHub Actions on a `v*` tag
 | `AsRunner` | `net10.0-windows` | WinForms tray app (UI, menu, launch orchestration) |
 | `WinApiWrapper` | `net10.0` | P/Invoke layer: process launch, Credential Manager, icons |
 | `ConfigReader` | `net10.0` | reads/writes `Config.json` |
-| `AsRunner.Installer` | WiX v6 | MSI installer |
+| `AsRunner.Installer/AsRunner.iss` | Inno Setup 6 | installer script |
 
 ## Disclaimer
 

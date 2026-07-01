@@ -26,23 +26,29 @@ jobs:
         id: ver
         shell: pwsh
         run: |
-          # v1.2.3 -> 1.2.3 ; v1.2.3-beta -> 1.2.3 (MSI-версия должна быть числовой)
+          # v1.2.3 -> 1.2.3 ; v1.2.3-beta -> 1.2.3
           $tag = "${{ github.ref_name }}"
           $version = ($tag.TrimStart('v') -split '-')[0]
           "version=$version" >> $env:GITHUB_OUTPUT
-          Write-Host "Tag $tag -> MSI version $version"
+          Write-Host "Tag $tag -> version $version"
 
-      - name: Build MSI
-        run: dotnet build AsRunner.Installer/AsRunner.Installer.wixproj -c Release -p:ProductVersion=${{ steps.ver.outputs.version }}
+      - name: Publish app (single-file, framework-dependent)
+        run: dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o AsRunner/bin/Release/publish
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Build installer
+        run: iscc /DMyAppVersion=${{ steps.ver.outputs.version }} AsRunner.Installer\AsRunner.iss
 
       - name: Name artifact with version
         shell: pwsh
-        run: Copy-Item AsRunner.Installer/bin/x64/Release/AsRunnerSetup.msi "AsRunnerSetup-${{ steps.ver.outputs.version }}.msi"
+        run: Copy-Item AsRunner.Installer/bin/AsRunnerSetup.exe "AsRunnerSetup-${{ steps.ver.outputs.version }}.exe"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: AsRunnerSetup-${{ steps.ver.outputs.version }}.msi
+          files: AsRunnerSetup-${{ steps.ver.outputs.version }}.exe
           generate_release_notes: true
           # Теги с суффиксом (v1.2.3-beta) помечаются как pre-release
           prerelease: ${{ contains(github.ref_name, '-') }}

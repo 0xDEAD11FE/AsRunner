@@ -48,24 +48,28 @@ dotnet build AsRunner/AsRunner.slnx -c Release   # или -c Debug
   `Constants.ShellFileInfo`) с оригинальным Win32-именем в комментарии.
 - Учётные данные: ключ `Tray:{domain}\{username}`, тип Generic, Persist=LocalMachine.
 
-## Инсталлятор (WiX)
+## Инсталлятор (Inno Setup)
 
-Проект `AsRunner.Installer/` (WiX v6, SDK-style), сосед основных проектов.
-Сборка — правый клик в Visual Studio (нужно расширение HeatWave) или из CLI:
+Скрипт `AsRunner.Installer/AsRunner.iss` (Inno Setup 6). Сборка — сперва publish
+приложения (single-file, framework-dependent), затем `iscc` (локально нужен
+установленный Inno Setup 6):
 
 ```powershell
-dotnet build AsRunner.Installer/AsRunner.Installer.wixproj -c Release
+dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o AsRunner/bin/Release/publish
+iscc AsRunner.Installer/AsRunner.iss   # /DMyAppVersion=1.2.3 — версия из CI
 ```
 
-Перед сборкой MSI приложение публикуется автоматически (таргет `PublishMainApp`):
-single-file, framework-dependent → один `AsRunner.exe`. Результат:
-`AsRunner.Installer/bin/x64/Release/AsRunnerSetup.msi`.
+Результат: `AsRunner.Installer/bin/AsRunnerSetup.exe`.
 
-Установка per-machine в Program Files (x64), страница выбора папки
-(`WixUI_InstallDir`), ярлык в «Пуск», короткий дисклеймер (`License.rtf`).
-`Config.json` в MSI не входит (`CopyToPublishDirectory=Never`) — создаётся в
-`%APPDATA%`. Инсталлятор x64-only и НЕ собирается в «Build Solution» (Any CPU) —
-собирать проект отдельно.
+Установка per-machine в Program Files (x64), страница выбора папки, короткий
+дисклеймер (`License.txt`), **без ярлыков**. При обновлении запущенный экземпляр
+закрывается автоматически (`AppMutex` = named-mutex из `Program.cs` +
+Restart Manager). После установки приложение стартует от имени пользователя
+(`runasoriginaluser`, не elevated). `Config.json` в пакет не входит
+(`CopyToPublishDirectory=Never`) — создаётся в `%APPDATA%`.
+
+Релизы собирает GitHub Actions по тегу `v*` (`.github/workflows/release.yml`):
+publish → установка Inno через choco → `iscc` → черновик Release с `.exe`.
 
 ## TODO
 
