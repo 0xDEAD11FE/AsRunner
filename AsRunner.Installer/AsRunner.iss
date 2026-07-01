@@ -31,13 +31,10 @@ SolidCompression=yes
 WizardStyle=modern
 LicenseFile=License.txt
 
-; Обновление: закрыть запущенный экземпляр автоматически, без ручного диалога.
-; Полагаемся на Restart Manager (CloseApplications) — он сам закрывает процессы,
-; держащие обновляемые файлы. AppMutex НЕ используем: он проверяется раньше RM и
-; показал бы ручной промпт «закройте приложение», перебивая авто-закрытие.
-; RestartApplications=no — не даём RM перезапускать (приложение стартуем через [Run]).
-CloseApplications=yes
-RestartApplications=no
+; Обновление: закрываем запущенный экземпляр сами (см. [Code] PrepareToInstall),
+; а не через Restart Manager — RM с end-session не смог штатно завершить процесс
+; (иконка пропадала, процесс висел, установщик выдавал «unable to close»).
+CloseApplications=no
 
 [Files]
 Source: "{#PublishDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
@@ -46,3 +43,17 @@ Source: "{#PublishDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; Автозапуск после установки — от имени исходного (не-elevated) пользователя.
 ; skipifsilent — не запускать при тихой установке (для массового развёртывания).
 Filename: "{app}\{#MyAppExeName}"; Flags: nowait skipifsilent runasoriginaluser
+
+[Code]
+// Закрываем запущенный AsRunner ДО копирования файлов (обновление).
+// Сперва мягко (WM_CLOSE — приложение корректно выходит), затем принудительно,
+// если ещё жив. Так процесс гарантированно закрыт, без диалогов RM.
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var
+  ResultCode: Integer;
+begin
+  Exec('taskkill.exe', '/IM {#MyAppExeName}', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Sleep(1500);
+  Exec('taskkill.exe', '/F /IM {#MyAppExeName}', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Result := '';
+end;
