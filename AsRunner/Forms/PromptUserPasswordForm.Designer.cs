@@ -33,6 +33,7 @@ partial class PromptUserPasswordForm
         textBoxDomain = new TextBox();
         textBoxUserName = new TextBox();
         textBoxPassword = new TextBox();
+        buttonShowPassword = new Button();
         labelDomain = new Label();
         labelUserName = new Label();
         labelPassword = new Label();
@@ -84,9 +85,22 @@ partial class PromptUserPasswordForm
         textBoxPassword.Location = new Point(15, 112);
         textBoxPassword.Name = "textBoxPassword";
         textBoxPassword.PlaceholderText = "Пароль";
-        textBoxPassword.Size = new Size(348, 23);
+        textBoxPassword.Size = new Size(315, 23);
         textBoxPassword.TabIndex = 2;
-        // 
+        textBoxPassword.UseSystemPasswordChar = true;
+        //
+        // buttonShowPassword
+        //
+        buttonShowPassword.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        buttonShowPassword.Location = new Point(333, 111);
+        buttonShowPassword.Name = "buttonShowPassword";
+        buttonShowPassword.Size = new Size(30, 25);
+        buttonShowPassword.TabStop = false;
+        buttonShowPassword.Text = "👁";
+        buttonShowPassword.UseVisualStyleBackColor = true;
+        buttonShowPassword.MouseDown += buttonShowPassword_MouseDown;
+        buttonShowPassword.MouseUp += buttonShowPassword_MouseUp;
+        //
         // labelDomain
         // 
         labelDomain.AutoSize = true;
@@ -124,6 +138,7 @@ partial class PromptUserPasswordForm
         Controls.Add(labelPassword);
         Controls.Add(labelUserName);
         Controls.Add(labelDomain);
+        Controls.Add(buttonShowPassword);
         Controls.Add(textBoxPassword);
         Controls.Add(textBoxUserName);
         Controls.Add(textBoxDomain);
@@ -150,6 +165,7 @@ partial class PromptUserPasswordForm
     private TextBox textBoxDomain;
     private TextBox textBoxUserName;
     private TextBox textBoxPassword;
+    private Button buttonShowPassword;
     private Label labelDomain;
     private Label labelUserName;
     private Label labelPassword;

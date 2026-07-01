@@ -25,6 +25,18 @@ public partial class PromptUserPasswordForm : Form
         }
     }
 
+    // Пароль виден только пока кнопка-глаз удерживается (удобно при шаринге экрана).
+    // Кнопка захватывает мышь на MouseDown, поэтому MouseUp сработает даже при отпускании вне неё.
+    private void buttonShowPassword_MouseDown(object sender, MouseEventArgs e)
+    {
+        textBoxPassword.UseSystemPasswordChar = false;
+    }
+
+    private void buttonShowPassword_MouseUp(object sender, MouseEventArgs e)
+    {
+        textBoxPassword.UseSystemPasswordChar = true;
+    }
+
     private void PromptUserPasswordForm_FormClosing(object sender, FormClosingEventArgs e)
     {
         if (DialogResult == DialogResult.OK)
