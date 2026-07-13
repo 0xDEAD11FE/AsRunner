@@ -33,6 +33,28 @@ public partial class ManagementForm : Form
         InitializeComponent();
         LoadApplications();
         LoadCredentials();
+
+        // Состояние ставим до подписки, чтобы обработчик не сработал на инициализации.
+        checkBoxAutoStart.Checked = AutoStartManager.IsEnabled();
+        checkBoxAutoStart.CheckedChanged += checkBoxAutoStart_CheckedChanged;
+    }
+
+    private void checkBoxAutoStart_CheckedChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            AutoStartManager.SetEnabled(checkBoxAutoStart.Checked);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Не удалось изменить автозапуск:\n{ex.Message}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            // Возвращаем галочку к фактическому состоянию, не вызывая обработчик повторно.
+            checkBoxAutoStart.CheckedChanged -= checkBoxAutoStart_CheckedChanged;
+            checkBoxAutoStart.Checked = AutoStartManager.IsEnabled();
+            checkBoxAutoStart.CheckedChanged += checkBoxAutoStart_CheckedChanged;
+        }
     }
 
     private List<(string Group, ApplicationConfig Cfg)> Snapshot() =>

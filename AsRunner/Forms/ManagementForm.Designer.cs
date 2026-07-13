@@ -35,6 +35,7 @@ partial class ManagementForm
         buttonRefreshCred = new Button();
         labelCredHint = new Label();
         buttonClose = new Button();
+        checkBoxAutoStart = new CheckBox();
         tabControl.SuspendLayout();
         tabPageApps.SuspendLayout();
         tabPageCreds.SuspendLayout();
@@ -225,6 +226,15 @@ partial class ManagementForm
         buttonClose.UseVisualStyleBackColor = true;
         buttonClose.Click += buttonClose_Click;
         //
+        // checkBoxAutoStart
+        //
+        checkBoxAutoStart.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        checkBoxAutoStart.AutoSize = true;
+        checkBoxAutoStart.Location = new Point(12, 427);
+        checkBoxAutoStart.Name = "checkBoxAutoStart";
+        checkBoxAutoStart.Text = "Запускать при старте Windows";
+        checkBoxAutoStart.UseVisualStyleBackColor = true;
+        //
         // ManagementForm
         //
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -232,6 +242,7 @@ partial class ManagementForm
         ClientSize = new Size(584, 461);
         Controls.Add(tabControl);
         Controls.Add(buttonClose);
+        Controls.Add(checkBoxAutoStart);
         MinimumSize = new Size(420, 300);
         Name = "ManagementForm";
         ShowIcon = false;
@@ -265,4 +276,5 @@ partial class ManagementForm
     private Button buttonRefreshCred;
     private Label labelCredHint;
     private Button buttonClose;
+    private CheckBox checkBoxAutoStart;
 }
