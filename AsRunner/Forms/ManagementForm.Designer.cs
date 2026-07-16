@@ -36,6 +36,7 @@ partial class ManagementForm
         labelCredHint = new Label();
         buttonClose = new Button();
         checkBoxAutoStart = new CheckBox();
+        checkBoxFolderMenu = new CheckBox();
         tabControl.SuspendLayout();
         tabPageApps.SuspendLayout();
         tabPageCreds.SuspendLayout();
@@ -235,6 +236,15 @@ partial class ManagementForm
         checkBoxAutoStart.Text = "Запускать при старте Windows";
         checkBoxAutoStart.UseVisualStyleBackColor = true;
         //
+        // checkBoxFolderMenu
+        //
+        checkBoxFolderMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        checkBoxFolderMenu.AutoSize = true;
+        checkBoxFolderMenu.Location = new Point(230, 427);
+        checkBoxFolderMenu.Name = "checkBoxFolderMenu";
+        checkBoxFolderMenu.Text = "Показывать в меню папок";
+        checkBoxFolderMenu.UseVisualStyleBackColor = true;
+        //
         // ManagementForm
         //
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -243,6 +253,7 @@ partial class ManagementForm
         Controls.Add(tabControl);
         Controls.Add(buttonClose);
         Controls.Add(checkBoxAutoStart);
+        Controls.Add(checkBoxFolderMenu);
         MinimumSize = new Size(420, 300);
         Name = "ManagementForm";
         ShowIcon = false;
@@ -277,4 +288,5 @@ partial class ManagementForm
     private Label labelCredHint;
     private Button buttonClose;
     private CheckBox checkBoxAutoStart;
+    private CheckBox checkBoxFolderMenu;
 }

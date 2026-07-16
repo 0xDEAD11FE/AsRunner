@@ -37,6 +37,9 @@ public partial class ManagementForm : Form
         // Состояние ставим до подписки, чтобы обработчик не сработал на инициализации.
         checkBoxAutoStart.Checked = AutoStartManager.IsEnabled();
         checkBoxAutoStart.CheckedChanged += checkBoxAutoStart_CheckedChanged;
+
+        checkBoxFolderMenu.Checked = FolderContextMenu.IsEnabled();
+        checkBoxFolderMenu.CheckedChanged += checkBoxFolderMenu_CheckedChanged;
     }
 
     private void checkBoxAutoStart_CheckedChanged(object? sender, EventArgs e)
@@ -55,6 +58,43 @@ public partial class ManagementForm : Form
             checkBoxAutoStart.Checked = AutoStartManager.IsEnabled();
             checkBoxAutoStart.CheckedChanged += checkBoxAutoStart_CheckedChanged;
         }
+    }
+
+    private void checkBoxFolderMenu_CheckedChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            if (checkBoxFolderMenu.Checked)
+                FolderContextMenu.Enable(BuildConfig());
+            else
+                FolderContextMenu.Disable();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Не удалось изменить интеграцию с меню папок:\n{ex.Message}", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            checkBoxFolderMenu.CheckedChanged -= checkBoxFolderMenu_CheckedChanged;
+            checkBoxFolderMenu.Checked = FolderContextMenu.IsEnabled();
+            checkBoxFolderMenu.CheckedChanged += checkBoxFolderMenu_CheckedChanged;
+        }
+    }
+
+    /// <summary>Собирает RootConfig из строк редактора (группировка обратно в словарь).</summary>
+    private RootConfig BuildConfig()
+    {
+        var config = new RootConfig();
+        foreach (var entry in _entries)
+        {
+            var key = NormalizeGroup(entry.Group);
+            if (!config.TryGetValue(key, out var list))
+            {
+                list = new List<ApplicationConfig>();
+                config[key] = list;
+            }
+            list.Add(entry.Cfg);
+        }
+        return config;
     }
 
     private List<(string Group, ApplicationConfig Cfg)> Snapshot() =>
@@ -186,22 +226,15 @@ public partial class ManagementForm : Form
 
     private void buttonSaveApps_Click(object sender, EventArgs e)
     {
-        var config = new RootConfig();
-        foreach (var entry in _entries)
-        {
-            var key = NormalizeGroup(entry.Group);
-            if (!config.TryGetValue(key, out var list))
-            {
-                list = new List<ApplicationConfig>();
-                config[key] = list;
-            }
-            list.Add(entry.Cfg);
-        }
+        var config = BuildConfig();
 
         try
         {
             Reader.WriteConfig(config);
             ConfigChanged = true;
+
+            // Если интеграция с меню папок включена — обновим подменю под новый список.
+            FolderContextMenu.Sync(config);
 
             // сохранённое состояние становится новым базовым;
             // обратная связь — кнопка «Сохранить» гаснет (изменений больше нет).

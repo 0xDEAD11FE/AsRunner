@@ -5,7 +5,11 @@ namespace AsRunner;
 
 internal class AppLauncher
 {
-    public void Execute(ApplicationConfig entry)
+    /// <summary>
+    /// Запускает приложение под учётной записью записи. Если задан <paramref name="folder"/>
+    /// (запуск из контекстного меню папки) — процесс стартует с рабочим каталогом = этой папкой.
+    /// </summary>
+    public void Execute(ApplicationConfig entry, string? folder = null)
     {
         string? domain = entry.Domain;
         string? userName = entry.UserName;
@@ -32,7 +36,7 @@ internal class AppLauncher
 
         try
         {
-            ProcessLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password);
+            ProcessLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password, workingDirectory: folder);
         }
         catch (Exception ex)
         {
