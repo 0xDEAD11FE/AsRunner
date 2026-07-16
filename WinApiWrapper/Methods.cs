@@ -42,4 +42,7 @@ internal static class Methods
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern bool DestroyIcon(IntPtr hIcon);
+
+    [DllImport("shell32.dll")]
+    internal static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
 }

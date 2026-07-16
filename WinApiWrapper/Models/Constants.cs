@@ -16,4 +16,11 @@ internal static class Constants
         internal const uint SmallIcon = 0x00000001;  // SHGFI_SMALLICON
         internal const uint LargeIcon = 0x00000000;  // SHGFI_LARGEICON
     }
+
+    /// <summary>Параметры SHChangeNotify.</summary>
+    internal static class ShellChange
+    {
+        internal const int AssocChanged = 0x08000000; // SHCNE_ASSOCCHANGED
+        internal const uint IdList = 0x00000000;      // SHCNF_IDLIST
+    }
 }
