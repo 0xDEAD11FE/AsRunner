@@ -1,5 +1,6 @@
 using ConfigReader.Models;
 using Microsoft.Win32;
+using WinApiWrapper;
 
 namespace AsRunner;
 
@@ -22,6 +23,7 @@ internal static class FolderContextMenu
     public static void Disable()
     {
         Registry.CurrentUser.DeleteSubKeyTree(ShellKeyPath, throwOnMissingSubKey: false);
+        Shell.NotifyAssociationsChanged();
     }
 
     /// <summary>Пересоздаёт подменю из текущего конфига.</summary>
@@ -38,10 +40,34 @@ internal static class FolderContextMenu
         root.SetValue("SubCommands", "");            // пустое → строить подменю из дочернего shell
         root.SetValue("Icon", $"\"{exe}\",0");
 
-        using var shell = root.CreateSubKey("shell");
+        using var rootShell = root.CreateSubKey("shell");
 
+        // Как в трее: одна группа → плоский список, несколько → подменю на группу.
+        if (config.Count == 1)
+        {
+            WriteApps(rootShell, config.Values.First(), exe);
+        }
+        else
+        {
+            int g = 0;
+            foreach (var (groupName, apps) in config)
+            {
+                using var group = rootShell.CreateSubKey($"grp{g:D3}");
+                group.SetValue("MUIVerb", groupName);
+                group.SetValue("SubCommands", "");   // вложенное подменю группы
+                using var groupShell = group.CreateSubKey("shell");
+                WriteApps(groupShell, apps, exe);
+                g++;
+            }
+        }
+
+        Shell.NotifyAssociationsChanged();
+    }
+
+    private static void WriteApps(RegistryKey shell, IEnumerable<ApplicationConfig> apps, string exe)
+    {
         int i = 0;
-        foreach (var app in config.Values.SelectMany(list => list))
+        foreach (var app in apps)
         {
             string label = !string.IsNullOrWhiteSpace(app.Alias)
                 ? app.Alias
@@ -52,7 +78,10 @@ internal static class FolderContextMenu
             item.SetValue("Icon", $"\"{app.FilePath}\",0");
 
             using var command = item.CreateSubKey("command");
-            command.SetValue("", $"\"{exe}\" --folder-run --exe \"{app.FilePath}\" --path \"%V\"");
+            // %V без кавычек и последним аргументом: для корня диска %V = "C:\", а
+            // "%V" дало бы \" (экранированную кавычку) и битый путь. Пробелы в пути
+            // собираем обратно в приложении (Program.TryGetFolderRun).
+            command.SetValue("", $"\"{exe}\" --folder-run --exe \"{app.FilePath}\" --path %V");
 
             i++;
         }

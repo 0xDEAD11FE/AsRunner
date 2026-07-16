@@ -64,7 +64,7 @@ internal static class Program
         }
     }
 
-    /// <summary>Разбирает аргументы вида: --folder-run --exe "&lt;path&gt;" --path "&lt;folder&gt;".</summary>
+    /// <summary>Разбирает аргументы вида: --folder-run --exe "&lt;path&gt;" --path &lt;folder&gt; (путь — последним, без кавычек).</summary>
     private static bool TryGetFolderRun(string[] args, out string exePath, out string folder)
     {
         exePath = string.Empty;
@@ -73,13 +73,18 @@ internal static class Program
         if (args.Length == 0 || !args.Contains("--folder-run"))
             return false;
 
-        for (int i = 0; i < args.Length - 1; i++)
-        {
-            if (args[i] == "--exe")
-                exePath = args[i + 1];
-            else if (args[i] == "--path")
-                folder = args[i + 1];
-        }
+        int exeIdx = Array.IndexOf(args, "--exe");
+        if (exeIdx >= 0 && exeIdx + 1 < args.Length)
+            exePath = args[exeIdx + 1];
+
+        // --path передан последним и без кавычек; путь с пробелами склеиваем обратно.
+        int pathIdx = Array.IndexOf(args, "--path");
+        if (pathIdx >= 0 && pathIdx + 1 < args.Length)
+            folder = string.Join(' ', args[(pathIdx + 1)..]);
+
+        // Корень диска: "C:" → "C:\" (иначе рабочий каталог невалиден).
+        if (folder.Length == 2 && folder[1] == ':')
+            folder += "\\";
 
         return !string.IsNullOrEmpty(exePath) && !string.IsNullOrEmpty(folder);
     }
