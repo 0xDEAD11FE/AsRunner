@@ -23,6 +23,7 @@ public partial class EditApplicationForm : Form
             comboBoxGroup.Text = group ?? string.Empty;
             textBoxFile.Text = existing.FilePath;
             textBoxAlias.Text = existing.Alias ?? string.Empty;
+            textBoxArgs.Text = existing.Arguments ?? string.Empty;
         }
         else
         {
@@ -116,9 +117,10 @@ public partial class EditApplicationForm : Form
         string? domain = cred is { IsNone: false } ? cred.Domain : null;
         string? userName = cred is { IsNone: false } ? cred.UserName : null;
         string? alias = string.IsNullOrWhiteSpace(textBoxAlias.Text) ? null : textBoxAlias.Text.Trim();
+        string? args = string.IsNullOrWhiteSpace(textBoxArgs.Text) ? null : textBoxArgs.Text.Trim();
 
         ResultGroup = comboBoxGroup.Text.Trim();
-        Result = new ApplicationConfig(file, userName, domain, alias);
+        Result = new ApplicationConfig(file, userName, domain, alias, args);
         DialogResult = DialogResult.OK;
     }
 }

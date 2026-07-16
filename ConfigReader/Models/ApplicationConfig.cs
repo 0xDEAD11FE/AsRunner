@@ -4,4 +4,5 @@ public record ApplicationConfig(
     string FilePath,
     string? UserName = null,
     string? Domain = null,
-    string? Alias = null);
+    string? Alias = null,
+    string? Arguments = null);

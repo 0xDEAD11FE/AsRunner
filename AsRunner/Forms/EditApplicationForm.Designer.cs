@@ -28,6 +28,8 @@ partial class EditApplicationForm
         labelAccount = new Label();
         comboBoxAccount = new ComboBox();
         buttonAddCred = new Button();
+        labelArgs = new Label();
+        textBoxArgs = new TextBox();
         buttonOk = new Button();
         buttonCancel = new Button();
         openFileDialog = new OpenFileDialog();
@@ -116,13 +118,28 @@ partial class EditApplicationForm
         buttonAddCred.UseVisualStyleBackColor = true;
         buttonAddCred.Click += buttonAddCred_Click;
         //
+        // labelArgs
+        //
+        labelArgs.AutoSize = true;
+        labelArgs.Location = new Point(12, 213);
+        labelArgs.Name = "labelArgs";
+        labelArgs.Text = "Аргументы (необязательно; {folder} = путь папки)";
+        //
+        // textBoxArgs
+        //
+        textBoxArgs.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        textBoxArgs.Location = new Point(12, 231);
+        textBoxArgs.Name = "textBoxArgs";
+        textBoxArgs.Size = new Size(420, 23);
+        textBoxArgs.TabIndex = 6;
+        //
         // buttonOk
         //
         buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonOk.Location = new Point(260, 255);
+        buttonOk.Location = new Point(260, 267);
         buttonOk.Name = "buttonOk";
         buttonOk.Size = new Size(84, 28);
-        buttonOk.TabIndex = 6;
+        buttonOk.TabIndex = 7;
         buttonOk.Text = "ОК";
         buttonOk.UseVisualStyleBackColor = true;
         buttonOk.Click += buttonOk_Click;
@@ -131,10 +148,10 @@ partial class EditApplicationForm
         //
         buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         buttonCancel.DialogResult = DialogResult.Cancel;
-        buttonCancel.Location = new Point(348, 255);
+        buttonCancel.Location = new Point(348, 267);
         buttonCancel.Name = "buttonCancel";
         buttonCancel.Size = new Size(84, 28);
-        buttonCancel.TabIndex = 7;
+        buttonCancel.TabIndex = 8;
         buttonCancel.Text = "Отмена";
         buttonCancel.UseVisualStyleBackColor = true;
         //
@@ -149,9 +166,11 @@ partial class EditApplicationForm
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         CancelButton = buttonCancel;
-        ClientSize = new Size(444, 296);
+        ClientSize = new Size(444, 305);
         Controls.Add(buttonCancel);
         Controls.Add(buttonOk);
+        Controls.Add(textBoxArgs);
+        Controls.Add(labelArgs);
         Controls.Add(buttonAddCred);
         Controls.Add(comboBoxAccount);
         Controls.Add(labelAccount);
@@ -186,6 +205,8 @@ partial class EditApplicationForm
     private Label labelAccount;
     private ComboBox comboBoxAccount;
     private Button buttonAddCred;
+    private Label labelArgs;
+    private TextBox textBoxArgs;
     private Button buttonOk;
     private Button buttonCancel;
     private OpenFileDialog openFileDialog;

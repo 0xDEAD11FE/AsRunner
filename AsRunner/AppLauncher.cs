@@ -36,7 +36,13 @@ internal class AppLauncher
 
         try
         {
-            ProcessLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password, workingDirectory: folder);
+            // {folder} в аргументах заменяем на путь папки (пусто при запуске не из папки).
+            string? arguments = string.IsNullOrEmpty(entry.Arguments)
+                ? null
+                : entry.Arguments.Replace("{folder}", folder ?? string.Empty);
+
+            ProcessLauncher.LaunchNetOnly(entry.FilePath, domain, userName, password,
+                workingDirectory: folder, arguments: arguments);
         }
         catch (Exception ex)
         {
