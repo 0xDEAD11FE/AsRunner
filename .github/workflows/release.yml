@@ -46,11 +46,16 @@ jobs:
         run: Copy-Item AsRunner.Installer/bin/AsRunnerSetup.exe "AsRunnerSetup-${{ steps.ver.outputs.version }}.exe"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: AsRunnerSetup-${{ steps.ver.outputs.version }}.exe
-          generate_release_notes: true
-          # Теги с суффиксом (v1.2.3-beta) помечаются как pre-release
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          # Релиз создаётся черновиком: заметки пишешь на GitHub и публикуешь вручную.
-          draft: true
+        # Через gh CLI (нативный, без Node) — надёжнее стороннего action.
+        # Черновик; теги с суффиксом (v1.2.3-beta) помечаются как pre-release.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = "${{ steps.ver.outputs.version }}"
+          $ghArgs = @($tag, "AsRunnerSetup-$version.exe",
+                      "--title", "AsRunner $version",
+                      "--generate-notes", "--draft")
+          if ($tag -like "*-*") { $ghArgs += "--prerelease" }
+          gh release create @ghArgs
