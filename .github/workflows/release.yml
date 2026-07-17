@@ -48,8 +48,10 @@ jobs:
         run: iscc /DMyAppVersion=${{ steps.ver.outputs.version }} AsRunner.Installer\AsRunner.iss
 
       - name: Name artifact with version
+        # Полная версия в имени (напр. AsRunnerSetup-1.2.0-beta.1.exe), чтобы ассеты
+        # разных бет на одной базе не совпадали. Inno выше — на числовой version.
         shell: pwsh
-        run: Copy-Item AsRunner.Installer/bin/AsRunnerSetup.exe "AsRunnerSetup-${{ steps.ver.outputs.version }}.exe"
+        run: Copy-Item AsRunner.Installer/bin/AsRunnerSetup.exe "AsRunnerSetup-${{ steps.ver.outputs.full }}.exe"
 
       - name: Create GitHub Release
         # Через gh CLI (нативный, без Node) — надёжнее стороннего action.
@@ -59,9 +61,8 @@ jobs:
         shell: pwsh
         run: |
           $tag = "${{ github.ref_name }}"
-          $version = "${{ steps.ver.outputs.version }}"
           $full = "${{ steps.ver.outputs.full }}"
-          $ghArgs = @($tag, "AsRunnerSetup-$version.exe",
+          $ghArgs = @($tag, "AsRunnerSetup-$full.exe",
                       "--title", "AsRunner $full",
                       "--generate-notes", "--draft")
           if ($tag -like "*-*") { $ghArgs += "--prerelease" }
