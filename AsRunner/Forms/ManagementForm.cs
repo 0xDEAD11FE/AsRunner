@@ -40,6 +40,50 @@ public partial class ManagementForm : Form
 
         checkBoxFolderMenu.Checked = FolderContextMenu.IsEnabled();
         checkBoxFolderMenu.CheckedChanged += checkBoxFolderMenu_CheckedChanged;
+
+        checkBoxBetaUpdates.Checked = SettingsManager.IncludePrereleases;
+        checkBoxBetaUpdates.CheckedChanged += checkBoxBetaUpdates_CheckedChanged;
+    }
+
+    private void checkBoxBetaUpdates_CheckedChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            SettingsManager.IncludePrereleases = checkBoxBetaUpdates.Checked;
+        }
+        catch
+        {
+            // реестр недоступен — не критично, настройка просто не сохранится
+        }
+    }
+
+    private async void buttonCheckUpdates_Click(object sender, EventArgs e)
+    {
+        buttonCheckUpdates.Enabled = false;
+        try
+        {
+            var (result, info) = await UpdateChecker.CheckNowAsync(checkBoxBetaUpdates.Checked);
+            switch (result)
+            {
+                case UpdateCheckResult.UpdateAvailable when info is not null:
+                    await UpdateInstaller.PromptAndInstallAsync(info, this);
+                    break;
+                case UpdateCheckResult.UpToDate:
+                    MessageBox.Show(this, "У вас установлена последняя версия.", "Обновления",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
+                default:
+                    MessageBox.Show(this,
+                        "Не удалось проверить обновления. Проверьте подключение к интернету.",
+                        "Обновления", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    break;
+            }
+        }
+        finally
+        {
+            if (!buttonCheckUpdates.IsDisposed)
+                buttonCheckUpdates.Enabled = true;
+        }
     }
 
     private void checkBoxAutoStart_CheckedChanged(object? sender, EventArgs e)

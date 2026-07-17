@@ -37,6 +37,8 @@ partial class ManagementForm
         buttonClose = new Button();
         checkBoxAutoStart = new CheckBox();
         checkBoxFolderMenu = new CheckBox();
+        checkBoxBetaUpdates = new CheckBox();
+        buttonCheckUpdates = new Button();
         tabControl.SuspendLayout();
         tabPageApps.SuspendLayout();
         tabPageCreds.SuspendLayout();
@@ -219,7 +221,7 @@ partial class ManagementForm
         // buttonClose
         //
         buttonClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonClose.Location = new Point(488, 421);
+        buttonClose.Location = new Point(488, 460);
         buttonClose.Name = "buttonClose";
         buttonClose.Size = new Size(84, 28);
         buttonClose.TabIndex = 1;
@@ -231,7 +233,7 @@ partial class ManagementForm
         //
         checkBoxAutoStart.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         checkBoxAutoStart.AutoSize = true;
-        checkBoxAutoStart.Location = new Point(12, 427);
+        checkBoxAutoStart.Location = new Point(12, 420);
         checkBoxAutoStart.Name = "checkBoxAutoStart";
         checkBoxAutoStart.Text = "Запускать при старте Windows";
         checkBoxAutoStart.UseVisualStyleBackColor = true;
@@ -240,20 +242,42 @@ partial class ManagementForm
         //
         checkBoxFolderMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         checkBoxFolderMenu.AutoSize = true;
-        checkBoxFolderMenu.Location = new Point(230, 427);
+        checkBoxFolderMenu.Location = new Point(230, 420);
         checkBoxFolderMenu.Name = "checkBoxFolderMenu";
         checkBoxFolderMenu.Text = "Показывать в меню папок";
         checkBoxFolderMenu.UseVisualStyleBackColor = true;
+        //
+        // checkBoxBetaUpdates
+        //
+        checkBoxBetaUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        checkBoxBetaUpdates.AutoSize = true;
+        checkBoxBetaUpdates.Location = new Point(12, 452);
+        checkBoxBetaUpdates.Name = "checkBoxBetaUpdates";
+        checkBoxBetaUpdates.Text = "Получать бета-версии (пред-релизы)";
+        checkBoxBetaUpdates.UseVisualStyleBackColor = true;
+        //
+        // buttonCheckUpdates
+        //
+        buttonCheckUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        buttonCheckUpdates.Location = new Point(288, 448);
+        buttonCheckUpdates.Name = "buttonCheckUpdates";
+        buttonCheckUpdates.Size = new Size(170, 28);
+        buttonCheckUpdates.TabIndex = 2;
+        buttonCheckUpdates.Text = "Проверить обновления";
+        buttonCheckUpdates.UseVisualStyleBackColor = true;
+        buttonCheckUpdates.Click += buttonCheckUpdates_Click;
         //
         // ManagementForm
         //
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(584, 461);
+        ClientSize = new Size(584, 500);
         Controls.Add(tabControl);
         Controls.Add(buttonClose);
         Controls.Add(checkBoxAutoStart);
         Controls.Add(checkBoxFolderMenu);
+        Controls.Add(checkBoxBetaUpdates);
+        Controls.Add(buttonCheckUpdates);
         MinimumSize = new Size(420, 300);
         Name = "ManagementForm";
         ShowIcon = false;
@@ -289,4 +313,6 @@ partial class ManagementForm
     private Button buttonClose;
     private CheckBox checkBoxAutoStart;
     private CheckBox checkBoxFolderMenu;
+    private CheckBox checkBoxBetaUpdates;
+    private Button buttonCheckUpdates;
 }

@@ -26,14 +26,20 @@ jobs:
         id: ver
         shell: pwsh
         run: |
-          # v1.2.3 -> 1.2.3 ; v1.2.3-beta -> 1.2.3
+          # full: с суффиксом (для -p:Version -> InformationalVersion, откуда апдейтер
+          #       читает полный semver «1.2.0-beta.1»).
+          # version: числовая часть (для имени артефакта и Inno — им нужен X.Y.Z).
           $tag = "${{ github.ref_name }}"
-          $version = ($tag.TrimStart('v') -split '-')[0]
+          $full = $tag.TrimStart('v')            # v1.2.3-beta.1 -> 1.2.3-beta.1
+          $version = ($full -split '-')[0]       # -> 1.2.3
+          "full=$full"       >> $env:GITHUB_OUTPUT
           "version=$version" >> $env:GITHUB_OUTPUT
-          Write-Host "Tag $tag -> version $version"
+          Write-Host "Tag $tag -> full $full, version $version"
 
       - name: Publish app (single-file, framework-dependent)
-        run: dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:Version=${{ steps.ver.outputs.version }} -o AsRunner/bin/Release/publish
+        # -p:Version=full: суффикс уходит в InformationalVersion (AssemblyVersion всё равно
+        # хранит только X.Y.Z.0 — этого достаточно, полный semver берётся из Informational).
+        run: dotnet publish AsRunner/AsRunner.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:Version=${{ steps.ver.outputs.full }} -o AsRunner/bin/Release/publish
 
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
@@ -54,8 +60,9 @@ jobs:
         run: |
           $tag = "${{ github.ref_name }}"
           $version = "${{ steps.ver.outputs.version }}"
+          $full = "${{ steps.ver.outputs.full }}"
           $ghArgs = @($tag, "AsRunnerSetup-$version.exe",
-                      "--title", "AsRunner $version",
+                      "--title", "AsRunner $full",
                       "--generate-notes", "--draft")
           if ($tag -like "*-*") { $ghArgs += "--prerelease" }
           gh release create @ghArgs

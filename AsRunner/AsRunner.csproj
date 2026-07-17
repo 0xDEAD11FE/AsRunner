@@ -6,8 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Версия приложения. В CI переопределяется из тега: -p:Version=1.2.3 -->
+    <!-- Версия приложения. В CI переопределяется из тега: -p:Version=1.2.3(-beta.1) -->
     <Version>1.1.0</Version>
+    <!-- Апдейтер читает текущую версию из InformationalVersion (там сохраняется суффикс
+         «-beta.1»). Без этого SDK допишет «+<commit>», который сбивал бы разбор. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <!-- Release конфигурация: оптимизация и без PDB файлов -->
