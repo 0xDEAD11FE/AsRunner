@@ -35,6 +35,12 @@ internal static class FolderContextMenu
         if (string.IsNullOrEmpty(exe))
             return;
 
+        // Только приложения с флагом ShowInFolderMenu; пустые группы отбрасываем.
+        var groups = config
+            .Select(kv => (Name: kv.Key, Apps: kv.Value.Where(a => a.ShowInFolderMenu).ToList()))
+            .Where(g => g.Apps.Count > 0)
+            .ToList();
+
         using var root = Registry.CurrentUser.CreateSubKey(ShellKeyPath);
         root.SetValue("MUIVerb", "AsRunner");
         root.SetValue("SubCommands", "");            // пустое → строить подменю из дочернего shell
@@ -43,14 +49,14 @@ internal static class FolderContextMenu
         using var rootShell = root.CreateSubKey("shell");
 
         // Как в трее: одна группа → плоский список, несколько → подменю на группу.
-        if (config.Count == 1)
+        if (groups.Count == 1)
         {
-            WriteApps(rootShell, config.Values.First(), exe);
+            WriteApps(rootShell, groups[0].Apps, exe);
         }
         else
         {
             int g = 0;
-            foreach (var (groupName, apps) in config)
+            foreach (var (groupName, apps) in groups)
             {
                 using var group = rootShell.CreateSubKey($"grp{g:D3}");
                 group.SetValue("MUIVerb", groupName);

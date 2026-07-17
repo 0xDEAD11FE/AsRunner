@@ -33,6 +33,7 @@ partial class EditApplicationForm
         buttonOk = new Button();
         buttonCancel = new Button();
         openFileDialog = new OpenFileDialog();
+        checkBoxShowInFolderMenu = new CheckBox();
         SuspendLayout();
         //
         // labelGroup
@@ -133,10 +134,19 @@ partial class EditApplicationForm
         textBoxArgs.Size = new Size(420, 23);
         textBoxArgs.TabIndex = 6;
         //
+        // checkBoxShowInFolderMenu
+        //
+        checkBoxShowInFolderMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+        checkBoxShowInFolderMenu.AutoSize = true;
+        checkBoxShowInFolderMenu.Location = new Point(12, 264);
+        checkBoxShowInFolderMenu.Name = "checkBoxShowInFolderMenu";
+        checkBoxShowInFolderMenu.Text = "Показывать в контекстном меню папок Explorer";
+        checkBoxShowInFolderMenu.UseVisualStyleBackColor = true;
+        //
         // buttonOk
         //
         buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonOk.Location = new Point(260, 267);
+        buttonOk.Location = new Point(260, 302);
         buttonOk.Name = "buttonOk";
         buttonOk.Size = new Size(84, 28);
         buttonOk.TabIndex = 7;
@@ -148,7 +158,7 @@ partial class EditApplicationForm
         //
         buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         buttonCancel.DialogResult = DialogResult.Cancel;
-        buttonCancel.Location = new Point(348, 267);
+        buttonCancel.Location = new Point(348, 302);
         buttonCancel.Name = "buttonCancel";
         buttonCancel.Size = new Size(84, 28);
         buttonCancel.TabIndex = 8;
@@ -166,7 +176,8 @@ partial class EditApplicationForm
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         CancelButton = buttonCancel;
-        ClientSize = new Size(444, 305);
+        ClientSize = new Size(444, 340);
+        Controls.Add(checkBoxShowInFolderMenu);
         Controls.Add(buttonCancel);
         Controls.Add(buttonOk);
         Controls.Add(textBoxArgs);
@@ -210,4 +221,5 @@ partial class EditApplicationForm
     private Button buttonOk;
     private Button buttonCancel;
     private OpenFileDialog openFileDialog;
+    private CheckBox checkBoxShowInFolderMenu;
 }

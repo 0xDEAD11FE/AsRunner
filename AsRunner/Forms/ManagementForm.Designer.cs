@@ -23,6 +23,7 @@ partial class ManagementForm
         columnName = new ColumnHeader();
         columnPath = new ColumnHeader();
         columnAccount = new ColumnHeader();
+        columnFolderMenu = new ColumnHeader();
         buttonAddApp = new Button();
         buttonEditApp = new Button();
         buttonDeleteApp = new Button();
@@ -39,9 +40,11 @@ partial class ManagementForm
         checkBoxFolderMenu = new CheckBox();
         checkBoxBetaUpdates = new CheckBox();
         buttonCheckUpdates = new Button();
+        tabPageSettings = new TabPage();
         tabControl.SuspendLayout();
         tabPageApps.SuspendLayout();
         tabPageCreds.SuspendLayout();
+        tabPageSettings.SuspendLayout();
         SuspendLayout();
         //
         // tabControl
@@ -49,6 +52,7 @@ partial class ManagementForm
         tabControl.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         tabControl.Controls.Add(tabPageApps);
         tabControl.Controls.Add(tabPageCreds);
+        tabControl.Controls.Add(tabPageSettings);
         tabControl.Location = new Point(12, 12);
         tabControl.Name = "tabControl";
         tabControl.SelectedIndex = 0;
@@ -73,17 +77,21 @@ partial class ManagementForm
         // listViewApps
         //
         listViewApps.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        listViewApps.Columns.AddRange(new ColumnHeader[] { columnName, columnPath, columnAccount });
+        listViewApps.Columns.AddRange(new ColumnHeader[] { columnName, columnAccount, columnFolderMenu, columnPath });
         listViewApps.FullRowSelect = true;
         listViewApps.Location = new Point(6, 6);
         listViewApps.MultiSelect = false;
         listViewApps.Name = "listViewApps";
+        listViewApps.OwnerDraw = true;
         listViewApps.Size = new Size(540, 322);
         listViewApps.TabIndex = 0;
         listViewApps.UseCompatibleStateImageBehavior = false;
         listViewApps.View = View.Details;
         listViewApps.SelectedIndexChanged += listViewApps_SelectedIndexChanged;
         listViewApps.MouseDoubleClick += listViewApps_MouseDoubleClick;
+        listViewApps.DrawColumnHeader += listViewApps_DrawColumnHeader;
+        listViewApps.DrawItem += listViewApps_DrawItem;
+        listViewApps.DrawSubItem += listViewApps_DrawSubItem;
         //
         // columnName
         //
@@ -99,6 +107,13 @@ partial class ManagementForm
         //
         columnAccount.Text = "Учётка";
         columnAccount.Width = 140;
+        //
+        // columnFolderMenu
+        //
+        // Заголовок без текста — рисуем значок Проводника (owner-draw).
+        columnFolderMenu.Text = "";
+        columnFolderMenu.TextAlign = HorizontalAlignment.Center;
+        columnFolderMenu.Width = 44;
         //
         // buttonAddApp
         //
@@ -221,7 +236,7 @@ partial class ManagementForm
         // buttonClose
         //
         buttonClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonClose.Location = new Point(488, 460);
+        buttonClose.Location = new Point(488, 421);
         buttonClose.Name = "buttonClose";
         buttonClose.Size = new Size(84, 28);
         buttonClose.TabIndex = 1;
@@ -229,40 +244,53 @@ partial class ManagementForm
         buttonClose.UseVisualStyleBackColor = true;
         buttonClose.Click += buttonClose_Click;
         //
+        // tabPageSettings
+        //
+        tabPageSettings.Controls.Add(checkBoxAutoStart);
+        tabPageSettings.Controls.Add(checkBoxFolderMenu);
+        tabPageSettings.Controls.Add(checkBoxBetaUpdates);
+        tabPageSettings.Controls.Add(buttonCheckUpdates);
+        tabPageSettings.Location = new Point(4, 24);
+        tabPageSettings.Name = "tabPageSettings";
+        tabPageSettings.Padding = new Padding(3);
+        tabPageSettings.Size = new Size(552, 372);
+        tabPageSettings.TabIndex = 2;
+        tabPageSettings.Text = "Настройки";
+        tabPageSettings.UseVisualStyleBackColor = true;
+        //
         // checkBoxAutoStart
         //
-        checkBoxAutoStart.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         checkBoxAutoStart.AutoSize = true;
-        checkBoxAutoStart.Location = new Point(12, 420);
+        checkBoxAutoStart.Location = new Point(16, 18);
         checkBoxAutoStart.Name = "checkBoxAutoStart";
+        checkBoxAutoStart.TabIndex = 0;
         checkBoxAutoStart.Text = "Запускать при старте Windows";
         checkBoxAutoStart.UseVisualStyleBackColor = true;
         //
         // checkBoxFolderMenu
         //
-        checkBoxFolderMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         checkBoxFolderMenu.AutoSize = true;
-        checkBoxFolderMenu.Location = new Point(230, 420);
+        checkBoxFolderMenu.Location = new Point(16, 48);
         checkBoxFolderMenu.Name = "checkBoxFolderMenu";
-        checkBoxFolderMenu.Text = "Показывать в меню папок";
+        checkBoxFolderMenu.TabIndex = 1;
+        checkBoxFolderMenu.Text = "Интеграция с контекстным меню папок Explorer";
         checkBoxFolderMenu.UseVisualStyleBackColor = true;
         //
         // checkBoxBetaUpdates
         //
-        checkBoxBetaUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         checkBoxBetaUpdates.AutoSize = true;
-        checkBoxBetaUpdates.Location = new Point(12, 452);
+        checkBoxBetaUpdates.Location = new Point(16, 78);
         checkBoxBetaUpdates.Name = "checkBoxBetaUpdates";
+        checkBoxBetaUpdates.TabIndex = 2;
         checkBoxBetaUpdates.Text = "Получать бета-версии (пред-релизы)";
         checkBoxBetaUpdates.UseVisualStyleBackColor = true;
         //
         // buttonCheckUpdates
         //
-        buttonCheckUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-        buttonCheckUpdates.Location = new Point(288, 448);
+        buttonCheckUpdates.Location = new Point(16, 116);
         buttonCheckUpdates.Name = "buttonCheckUpdates";
-        buttonCheckUpdates.Size = new Size(170, 28);
-        buttonCheckUpdates.TabIndex = 2;
+        buttonCheckUpdates.Size = new Size(180, 28);
+        buttonCheckUpdates.TabIndex = 3;
         buttonCheckUpdates.Text = "Проверить обновления";
         buttonCheckUpdates.UseVisualStyleBackColor = true;
         buttonCheckUpdates.Click += buttonCheckUpdates_Click;
@@ -271,13 +299,9 @@ partial class ManagementForm
         //
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(584, 500);
+        ClientSize = new Size(584, 461);
         Controls.Add(tabControl);
         Controls.Add(buttonClose);
-        Controls.Add(checkBoxAutoStart);
-        Controls.Add(checkBoxFolderMenu);
-        Controls.Add(checkBoxBetaUpdates);
-        Controls.Add(buttonCheckUpdates);
         MinimumSize = new Size(420, 300);
         Name = "ManagementForm";
         ShowIcon = false;
@@ -288,6 +312,8 @@ partial class ManagementForm
         tabPageApps.ResumeLayout(false);
         tabPageCreds.ResumeLayout(false);
         tabPageCreds.PerformLayout();
+        tabPageSettings.ResumeLayout(false);
+        tabPageSettings.PerformLayout();
         ResumeLayout(false);
     }
 
@@ -299,6 +325,7 @@ partial class ManagementForm
     private ColumnHeader columnName;
     private ColumnHeader columnPath;
     private ColumnHeader columnAccount;
+    private ColumnHeader columnFolderMenu;
     private Button buttonAddApp;
     private Button buttonEditApp;
     private Button buttonDeleteApp;
@@ -315,4 +342,5 @@ partial class ManagementForm
     private CheckBox checkBoxFolderMenu;
     private CheckBox checkBoxBetaUpdates;
     private Button buttonCheckUpdates;
+    private TabPage tabPageSettings;
 }

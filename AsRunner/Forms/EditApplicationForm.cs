@@ -24,6 +24,7 @@ public partial class EditApplicationForm : Form
             textBoxFile.Text = existing.FilePath;
             textBoxAlias.Text = existing.Alias ?? string.Empty;
             textBoxArgs.Text = existing.Arguments ?? string.Empty;
+            checkBoxShowInFolderMenu.Checked = existing.ShowInFolderMenu;
         }
         else
         {
@@ -120,7 +121,7 @@ public partial class EditApplicationForm : Form
         string? args = string.IsNullOrWhiteSpace(textBoxArgs.Text) ? null : textBoxArgs.Text.Trim();
 
         ResultGroup = comboBoxGroup.Text.Trim();
-        Result = new ApplicationConfig(file, userName, domain, alias, args);
+        Result = new ApplicationConfig(file, userName, domain, alias, args, checkBoxShowInFolderMenu.Checked);
         DialogResult = DialogResult.OK;
     }
 }

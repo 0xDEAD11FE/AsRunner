@@ -1,3 +1,4 @@
+using System.Drawing;
 using ConfigReader;
 using ConfigReader.Models;
 using WinApiWrapper;
@@ -28,9 +29,17 @@ public partial class ManagementForm : Form
     /// <summary>Есть несохранённые изменения в списке приложений.</summary>
     private bool _hasChanges;
 
+    /// <summary>Индекс столбца-индикатора «в меню папок» (совпадает с порядком в Designer).</summary>
+    private const int FolderMenuColumn = 2;
+
+    /// <summary>Иконка Проводника для заголовка и ячеек столбца FolderMenuColumn (GDI-ресурс).</summary>
+    private Bitmap? _explorerIcon;
+
     public ManagementForm()
     {
         InitializeComponent();
+        LoadExplorerIcon();
+        Disposed += (_, _) => _explorerIcon?.Dispose();
         LoadApplications();
         LoadCredentials();
 
@@ -207,7 +216,9 @@ public partial class ManagementForm : Form
                 ? $"{entry.Cfg.Domain}\\{entry.Cfg.UserName}"
                 : "—";
 
-            listViewApps.Items.Add(new ListViewItem(new[] { name, entry.Cfg.FilePath, account }, lvg) { Tag = entry });
+            // Порядок подстрок соответствует порядку столбцов: Имя, Учётка, ✓, Путь.
+            string folderMark = entry.Cfg.ShowInFolderMenu ? "✓" : "";
+            listViewApps.Items.Add(new ListViewItem(new[] { name, account, folderMark, entry.Cfg.FilePath }, lvg) { Tag = entry });
         }
 
         listViewApps.EndUpdate();
@@ -220,6 +231,59 @@ public partial class ManagementForm : Form
         buttonEditApp.Enabled = has;
         buttonDeleteApp.Enabled = has;
     }
+
+    // ===== Столбец «в меню папок»: значок Проводника (owner-draw) =====
+
+    private void LoadExplorerIcon()
+    {
+        var path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
+
+        IntPtr hIcon = IconExtractor.ExtractSmallIcon(path);
+        if (hIcon == IntPtr.Zero)
+            return;
+
+        try
+        {
+            // Icon.FromHandle не владеет хэндлом; ToBitmap() делает независимую копию.
+            using var icon = Icon.FromHandle(hIcon);
+            _explorerIcon = icon.ToBitmap();
+        }
+        finally
+        {
+            IconExtractor.DestroyIcon(hIcon);
+        }
+    }
+
+    private void DrawExplorerIcon(Graphics g, Rectangle bounds)
+    {
+        if (_explorerIcon is null)
+            return;
+
+        int x = bounds.Left + (bounds.Width - _explorerIcon.Width) / 2;
+        int y = bounds.Top + (bounds.Height - _explorerIcon.Height) / 2;
+        g.DrawImage(_explorerIcon, x, y, _explorerIcon.Width, _explorerIcon.Height);
+    }
+
+    private void listViewApps_DrawColumnHeader(object? sender, DrawListViewColumnHeaderEventArgs e)
+    {
+        if (e.ColumnIndex != FolderMenuColumn)
+        {
+            e.DrawDefault = true;
+            return;
+        }
+
+        e.DrawBackground();
+        DrawExplorerIcon(e.Graphics, e.Bounds);
+    }
+
+    // Пустой обработчик обязателен: в Details-режиме без него не поднимаются DrawSubItem.
+    private void listViewApps_DrawItem(object? sender, DrawListViewItemEventArgs e) { }
+
+    // Ячейки рисуем штатно: столбец значка показывает текст «✓» (центрируется по TextAlign),
+    // owner-draw задействован только ради иконки в заголовке.
+    private void listViewApps_DrawSubItem(object? sender, DrawListViewSubItemEventArgs e)
+        => e.DrawDefault = true;
 
     private static string NormalizeGroup(string group) =>
         string.IsNullOrWhiteSpace(group) ? DefaultGroup : group.Trim();
