@@ -45,4 +45,13 @@ internal static class Methods
 
     [DllImport("shell32.dll")]
     internal static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+    [DllImport("shell32.dll")]
+    internal static extern int SHQueryUserNotificationState(out int pquns);
 }

@@ -5,6 +5,7 @@ public class AsRunnerContext : ApplicationContext
     private readonly MainForm _mainForm;
     private readonly AppLauncher _appLauncher;
     private readonly MenuBuilder _menuBuilder;
+    private readonly HotkeyManager _hotkeys;
 
     // Одноразовый таймер: проверку обновлений запускаем уже из UI-потока
     // (с установленным WinForms SynchronizationContext) через пару секунд после старта.
@@ -21,6 +22,10 @@ public class AsRunnerContext : ApplicationContext
         _menuBuilder = new MenuBuilder(_appLauncher);
 
         _menuBuilder.BuildMenu(config, _mainForm.TrayMenuStrip);
+
+        _hotkeys = new HotkeyManager();
+        _hotkeys.Activated += app => _appLauncher.Execute(app);
+        _hotkeys.Register(config);
 
         _updateCheckTimer = new System.Windows.Forms.Timer { Interval = 3000 };
         _updateCheckTimer.Tick += OnUpdateCheckTick;
@@ -46,9 +51,23 @@ public class AsRunnerContext : ApplicationContext
 
     private void OnManageRequested(object? sender, EventArgs e)
     {
+        // Пока открыто окно управления — снимаем свои хоткеи, чтобы проба
+        // «свободна/занята» в редакторе не видела их как занятые нами же.
+        _hotkeys.UnregisterAll();
+
         // Если конфиг был сохранён — перечитываем и пересобираем меню.
         if (FormManager.ShowManagementForm())
             ReloadMenu();
+
+        // Перерегистрируем хоткеи (конфиг мог измениться).
+        try
+        {
+            _hotkeys.Register(ConfigReader.Reader.ReadConfig());
+        }
+        catch
+        {
+            // битый конфиг — просто останемся без хоткеев до следующего успешного чтения
+        }
     }
 
     private void ReloadMenu()
@@ -80,6 +99,9 @@ public class AsRunnerContext : ApplicationContext
 
             // Освобождаем GDI-ресурсы иконок пунктов меню.
             _menuBuilder?.Dispose();
+
+            // Снимаем глобальные хоткеи и уничтожаем окно-приёмник.
+            _hotkeys?.Dispose();
         }
 
         base.Dispose(disposing);

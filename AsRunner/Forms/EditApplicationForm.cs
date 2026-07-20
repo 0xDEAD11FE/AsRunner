@@ -1,3 +1,4 @@
+using System.Drawing;
 using ConfigReader.Models;
 using WinApiWrapper;
 
@@ -7,6 +8,9 @@ public partial class EditApplicationForm : Form
 {
     public string ResultGroup { get; private set; } = string.Empty;
     public ApplicationConfig? Result { get; private set; }
+
+    /// <summary>Назначенная комбинация (Keys.None — не задана).</summary>
+    private Keys _hotkeyKeys = Keys.None;
 
     public EditApplicationForm(IEnumerable<string> existingGroups, string? group = null, ApplicationConfig? existing = null)
     {
@@ -25,6 +29,7 @@ public partial class EditApplicationForm : Form
             textBoxAlias.Text = existing.Alias ?? string.Empty;
             textBoxArgs.Text = existing.Arguments ?? string.Empty;
             checkBoxShowInFolderMenu.Checked = existing.ShowInFolderMenu;
+            SetHotkey(Hotkey.TryParse(existing.Hotkey, out var hk) ? hk : Keys.None);
         }
         else
         {
@@ -120,8 +125,54 @@ public partial class EditApplicationForm : Form
         string? alias = string.IsNullOrWhiteSpace(textBoxAlias.Text) ? null : textBoxAlias.Text.Trim();
         string? args = string.IsNullOrWhiteSpace(textBoxArgs.Text) ? null : textBoxArgs.Text.Trim();
 
+        string? hotkey = _hotkeyKeys == Keys.None ? null : Hotkey.Format(_hotkeyKeys);
+
         ResultGroup = comboBoxGroup.Text.Trim();
-        Result = new ApplicationConfig(file, userName, domain, alias, args, checkBoxShowInFolderMenu.Checked);
+        Result = new ApplicationConfig(file, userName, domain, alias, args, checkBoxShowInFolderMenu.Checked, hotkey);
         DialogResult = DialogResult.OK;
+    }
+
+    // ===== Горячая клавиша =====
+
+    private void textBoxHotkey_KeyDown(object sender, KeyEventArgs e)
+    {
+        e.SuppressKeyPress = true;   // не печатаем символ в поле
+
+        // Одиночный модификатор (Ctrl/Alt/Shift) — ждём основную клавишу.
+        if (Hotkey.IsModifierOnly(e.KeyCode))
+            return;
+
+        // Backspace/Delete — сброс.
+        if (e.KeyCode is Keys.Back or Keys.Delete)
+        {
+            SetHotkey(Keys.None);
+            return;
+        }
+
+        // Назначаем только полную комбинацию (модификатор + клавиша);
+        // «голую» клавишу без модификатора игнорируем.
+        if (Hotkey.IsComplete(e.KeyData))
+            SetHotkey(e.KeyData);
+    }
+
+    private void buttonClearHotkey_Click(object sender, EventArgs e) => SetHotkey(Keys.None);
+
+    private void SetHotkey(Keys keyData)
+    {
+        _hotkeyKeys = keyData;
+
+        if (_hotkeyKeys == Keys.None)
+        {
+            textBoxHotkey.Text = string.Empty;
+            labelHotkeyStatus.Text = string.Empty;
+            return;
+        }
+
+        textBoxHotkey.Text = Hotkey.Format(_hotkeyKeys);
+
+        // Живая проверка занятости в системе (свои хоткеи на время окна сняты).
+        bool free = HotKeys.IsFree(Hotkey.Modifiers(_hotkeyKeys), Hotkey.VirtualKey(_hotkeyKeys));
+        labelHotkeyStatus.Text = free ? "свободна" : "занята";
+        labelHotkeyStatus.ForeColor = free ? Color.Green : Color.Firebrick;
     }
 }

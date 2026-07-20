@@ -34,6 +34,10 @@ partial class EditApplicationForm
         buttonCancel = new Button();
         openFileDialog = new OpenFileDialog();
         checkBoxShowInFolderMenu = new CheckBox();
+        labelHotkey = new Label();
+        textBoxHotkey = new TextBox();
+        buttonClearHotkey = new Button();
+        labelHotkeyStatus = new Label();
         SuspendLayout();
         //
         // labelGroup
@@ -134,11 +138,45 @@ partial class EditApplicationForm
         textBoxArgs.Size = new Size(420, 23);
         textBoxArgs.TabIndex = 6;
         //
+        // labelHotkey
+        //
+        labelHotkey.AutoSize = true;
+        labelHotkey.Location = new Point(12, 264);
+        labelHotkey.Name = "labelHotkey";
+        labelHotkey.Text = "Горячая клавиша (необязательно)";
+        //
+        // textBoxHotkey
+        //
+        textBoxHotkey.Location = new Point(12, 282);
+        textBoxHotkey.Name = "textBoxHotkey";
+        textBoxHotkey.ReadOnly = true;
+        textBoxHotkey.Size = new Size(230, 23);
+        textBoxHotkey.TabIndex = 7;
+        textBoxHotkey.KeyDown += textBoxHotkey_KeyDown;
+        //
+        // buttonClearHotkey
+        //
+        buttonClearHotkey.Location = new Point(248, 281);
+        buttonClearHotkey.Name = "buttonClearHotkey";
+        buttonClearHotkey.Size = new Size(84, 25);
+        buttonClearHotkey.TabIndex = 8;
+        buttonClearHotkey.Text = "Очистить";
+        buttonClearHotkey.UseVisualStyleBackColor = true;
+        buttonClearHotkey.Click += buttonClearHotkey_Click;
+        //
+        // labelHotkeyStatus
+        //
+        labelHotkeyStatus.AutoSize = true;
+        labelHotkeyStatus.ForeColor = SystemColors.GrayText;
+        labelHotkeyStatus.Location = new Point(338, 286);
+        labelHotkeyStatus.Name = "labelHotkeyStatus";
+        labelHotkeyStatus.Text = "";
+        //
         // checkBoxShowInFolderMenu
         //
         checkBoxShowInFolderMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left;
         checkBoxShowInFolderMenu.AutoSize = true;
-        checkBoxShowInFolderMenu.Location = new Point(12, 264);
+        checkBoxShowInFolderMenu.Location = new Point(12, 320);
         checkBoxShowInFolderMenu.Name = "checkBoxShowInFolderMenu";
         checkBoxShowInFolderMenu.Text = "Показывать в контекстном меню папок Explorer";
         checkBoxShowInFolderMenu.UseVisualStyleBackColor = true;
@@ -146,10 +184,10 @@ partial class EditApplicationForm
         // buttonOk
         //
         buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        buttonOk.Location = new Point(260, 302);
+        buttonOk.Location = new Point(260, 358);
         buttonOk.Name = "buttonOk";
         buttonOk.Size = new Size(84, 28);
-        buttonOk.TabIndex = 7;
+        buttonOk.TabIndex = 9;
         buttonOk.Text = "ОК";
         buttonOk.UseVisualStyleBackColor = true;
         buttonOk.Click += buttonOk_Click;
@@ -158,10 +196,10 @@ partial class EditApplicationForm
         //
         buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         buttonCancel.DialogResult = DialogResult.Cancel;
-        buttonCancel.Location = new Point(348, 302);
+        buttonCancel.Location = new Point(348, 358);
         buttonCancel.Name = "buttonCancel";
         buttonCancel.Size = new Size(84, 28);
-        buttonCancel.TabIndex = 8;
+        buttonCancel.TabIndex = 10;
         buttonCancel.Text = "Отмена";
         buttonCancel.UseVisualStyleBackColor = true;
         //
@@ -176,7 +214,11 @@ partial class EditApplicationForm
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         CancelButton = buttonCancel;
-        ClientSize = new Size(444, 340);
+        ClientSize = new Size(444, 398);
+        Controls.Add(labelHotkey);
+        Controls.Add(textBoxHotkey);
+        Controls.Add(buttonClearHotkey);
+        Controls.Add(labelHotkeyStatus);
         Controls.Add(checkBoxShowInFolderMenu);
         Controls.Add(buttonCancel);
         Controls.Add(buttonOk);
@@ -222,4 +264,8 @@ partial class EditApplicationForm
     private Button buttonCancel;
     private OpenFileDialog openFileDialog;
     private CheckBox checkBoxShowInFolderMenu;
+    private Label labelHotkey;
+    private TextBox textBoxHotkey;
+    private Button buttonClearHotkey;
+    private Label labelHotkeyStatus;
 }

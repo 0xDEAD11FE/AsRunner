@@ -30,7 +30,7 @@ public partial class ManagementForm : Form
     private bool _hasChanges;
 
     /// <summary>Индекс столбца-индикатора «в меню папок» (совпадает с порядком в Designer).</summary>
-    private const int FolderMenuColumn = 2;
+    private const int FolderMenuColumn = 3;
 
     /// <summary>Иконка Проводника для заголовка и ячеек столбца FolderMenuColumn (GDI-ресурс).</summary>
     private Bitmap? _explorerIcon;
@@ -216,9 +216,10 @@ public partial class ManagementForm : Form
                 ? $"{entry.Cfg.Domain}\\{entry.Cfg.UserName}"
                 : "—";
 
-            // Порядок подстрок соответствует порядку столбцов: Имя, Учётка, ✓, Путь.
+            // Порядок подстрок соответствует порядку столбцов: Имя, Учётка, Клавиши, ✓, Путь.
             string folderMark = entry.Cfg.ShowInFolderMenu ? "✓" : "";
-            listViewApps.Items.Add(new ListViewItem(new[] { name, account, folderMark, entry.Cfg.FilePath }, lvg) { Tag = entry });
+            string hotkey = entry.Cfg.Hotkey ?? "";
+            listViewApps.Items.Add(new ListViewItem(new[] { name, account, hotkey, folderMark, entry.Cfg.FilePath }, lvg) { Tag = entry });
         }
 
         listViewApps.EndUpdate();

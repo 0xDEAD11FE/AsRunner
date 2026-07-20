@@ -23,6 +23,7 @@ partial class ManagementForm
         columnName = new ColumnHeader();
         columnPath = new ColumnHeader();
         columnAccount = new ColumnHeader();
+        columnHotkey = new ColumnHeader();
         columnFolderMenu = new ColumnHeader();
         buttonAddApp = new Button();
         buttonEditApp = new Button();
@@ -77,7 +78,7 @@ partial class ManagementForm
         // listViewApps
         //
         listViewApps.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        listViewApps.Columns.AddRange(new ColumnHeader[] { columnName, columnAccount, columnFolderMenu, columnPath });
+        listViewApps.Columns.AddRange(new ColumnHeader[] { columnName, columnAccount, columnHotkey, columnFolderMenu, columnPath });
         listViewApps.FullRowSelect = true;
         listViewApps.Location = new Point(6, 6);
         listViewApps.MultiSelect = false;
@@ -107,6 +108,11 @@ partial class ManagementForm
         //
         columnAccount.Text = "Учётка";
         columnAccount.Width = 140;
+        //
+        // columnHotkey
+        //
+        columnHotkey.Text = "Клавиши";
+        columnHotkey.Width = 120;
         //
         // columnFolderMenu
         //
@@ -325,6 +331,7 @@ partial class ManagementForm
     private ColumnHeader columnName;
     private ColumnHeader columnPath;
     private ColumnHeader columnAccount;
+    private ColumnHeader columnHotkey;
     private ColumnHeader columnFolderMenu;
     private Button buttonAddApp;
     private Button buttonEditApp;
