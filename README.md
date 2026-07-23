@@ -18,10 +18,16 @@ app from the tray, and it starts under the chosen account.
 - Passwords are kept in **Windows Credential Manager**; you're prompted once if a
   credential isn't saved yet.
 - App **icons** in the tray menu, plus an optional **alias** to name entries
-  (e.g. tell *SSMS 18* and *SSMS 22* apart).
-- Group apps into submenus.
-- Manage apps and credentials from the **UI** — add / edit / delete, browse for
-  the executable, pick or add an account.
+  (e.g. tell *SSMS 18* and *SSMS 22* apart). Group apps into submenus.
+- Optional per-app **command-line arguments**, with a `{folder}` placeholder.
+- **Explorer folder context menu** (opt-in per app): right-click inside a folder
+  → *AsRunner* → launch an app there (that folder becomes its working directory).
+- **Global hotkeys**: assign a per-app shortcut (e.g. `Ctrl+Alt+K`) to launch it
+  from anywhere; the picker shows whether a combo is free, and hotkeys stay quiet
+  over fullscreen apps/games.
+- **Run at Windows startup** toggle, plus an **automatic update check** with an
+  optional beta channel.
+- Manage apps, credentials and settings from the **UI**.
 - Single instance, minimal footprint.
 
 ## Install
@@ -43,8 +49,12 @@ app from the tray, and it starts under the chosen account.
   tray (no shortcut — it's a background tray app).
 - **Right-click** the tray icon → menu of your apps → click one to launch it
   (you'll be asked for the password the first time, then it's remembered).
-- **Double-click** the tray icon → management window (tabs **Applications** and
-  **Credentials**).
+- **Double-click** the tray icon → management window (tabs **Applications**,
+  **Credentials** and **Settings**).
+- Assign a **hotkey** or enable the **folder context menu** per app when you add
+  or edit it on the *Applications* tab. Autostart, the folder-menu integration,
+  the beta update channel and a manual **Check for updates** live on the
+  *Settings* tab.
 
 ## Configuration
 
@@ -62,10 +72,13 @@ You normally edit it from the UI, but the format is simple — groups of apps:
       "FilePath": "C:\\Program Files\\Microsoft SQL Server Management Studio 22\\Release\\Common7\\IDE\\SSMS.exe",
       "UserName": "your.name",
       "Domain": "domain",
-      "Alias": "SSMS 22"
+      "Alias": "SSMS 22",
+      "Hotkey": "Ctrl+Alt+S"
     },
     {
-      "FilePath": "C:\\Windows\\explorer.exe"
+      "FilePath": "C:\\Windows\\explorer.exe",
+      "Arguments": "{folder}",
+      "ShowInFolderMenu": true
     }
   ]
 }
@@ -74,6 +87,10 @@ You normally edit it from the UI, but the format is simple — groups of apps:
 - A single group → flat menu; multiple groups → submenus.
 - `UserName` / `Domain` are optional; without them you're prompted at launch.
 - `Alias` overrides the menu label (defaults to the file name).
+- `Arguments` — optional command-line arguments; `{folder}` is replaced with the
+  folder path when the app is launched from the Explorer folder context menu.
+- `ShowInFolderMenu` — include this app in the folder context menu (default `false`).
+- `Hotkey` — global launch shortcut, e.g. `Ctrl+Alt+S` (default: none).
 
 ## Build from source
 
@@ -96,7 +113,7 @@ Releases are produced automatically by GitHub Actions on a `v*` tag
 | Project | Target | Role |
 |---|---|---|
 | `AsRunner` | `net10.0-windows` | WinForms tray app (UI, menu, launch orchestration) |
-| `WinApiWrapper` | `net10.0` | P/Invoke layer: process launch, Credential Manager, icons |
+| `WinApiWrapper` | `net10.0` | P/Invoke layer: process launch, Credential Manager, icons, global hotkeys, shell helpers |
 | `ConfigReader` | `net10.0` | reads/writes `Config.json` |
 | `AsRunner.Installer/AsRunner.iss` | Inno Setup 6 | installer script |
 
